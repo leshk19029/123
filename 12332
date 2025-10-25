@@ -1,164 +1,960 @@
-namespace offsets {
-    inline constexpr uintptr_t Adornee = 0xD0;
-    inline constexpr uintptr_t Anchored = 0x275;
-    inline constexpr uintptr_t AnchoredMask = 0x2;
-    inline constexpr uintptr_t AnimationId = 0xD0;
-    inline constexpr uintptr_t AttributeToNext = 0x58;
-    inline constexpr uintptr_t AttributeToValue = 0x18;
-    inline constexpr uintptr_t AutoJumpEnabled = 0x1DB;
-    inline constexpr uintptr_t BeamBrightness = 0x190;
-    inline constexpr uintptr_t BeamColor = 0x120;
-    inline constexpr uintptr_t BeamLightEmission = 0x19C;
-    inline constexpr uintptr_t BeamLightInfuence = 0x1A0;
-    inline constexpr uintptr_t CFrame = 0xF8;
-    inline constexpr uintptr_t Camera = 0x448;
-    inline constexpr uintptr_t CameraMaxZoomDistance = 0x2D0;
-    inline constexpr uintptr_t CameraMinZoomDistance = 0x2D4;
-    inline constexpr uintptr_t CameraMode = 0x2D8;
-    inline constexpr uintptr_t CameraPos = 0x11C;
-    inline constexpr uintptr_t CameraRotation = 0xF8;
-    inline constexpr uintptr_t CameraSubject = 0xE8;
-    inline constexpr uintptr_t CameraType = 0x158;
-    inline constexpr uintptr_t CanCollide = 0x275;
-    inline constexpr uintptr_t CanCollideMask = 0x8;
-    inline constexpr uintptr_t CanTouch = 0x275;
-    inline constexpr uintptr_t CanTouchMask = 0x10;
-    inline constexpr uintptr_t CharacterAppearanceId = 0x278;
-    inline constexpr uintptr_t Children = 0x60;
-    inline constexpr uintptr_t ChildrenEnd = 0x8;
-    inline constexpr uintptr_t ClassDescriptor = 0x18;
-    inline constexpr uintptr_t ClassDescriptorToClassName = 0x8;
-    inline constexpr uintptr_t ClickDetectorMaxActivationDistance = 0x100;
-    inline constexpr uintptr_t ClockTime = 0x1B8;
-    inline constexpr uintptr_t CreatorId = 0x188;
-    inline constexpr uintptr_t DataModelDeleterPointer = 0x720A140;
-    inline constexpr uintptr_t DataModelPrimitiveCount = 0x418;
-    inline constexpr uintptr_t DataModelToRenderView1 = 0x1D0;
-    inline constexpr uintptr_t DataModelToRenderView2 = 0x8;
-    inline constexpr uintptr_t DataModelToRenderView3 = 0x28;
-    inline constexpr uintptr_t DecalTexture = 0x198;
-    inline constexpr uintptr_t Deleter = 0x10;
-    inline constexpr uintptr_t DeleterBack = 0x18;
-    inline constexpr uintptr_t Dimensions = 0x720;
-    inline constexpr uintptr_t DisplayName = 0x110;
-    inline constexpr uintptr_t EvaluateStateMachine = 0x1DD;
-    inline constexpr uintptr_t FOV = 0x160;
-    inline constexpr uintptr_t FakeDataModelPointer = 0x720A138;
-    inline constexpr uintptr_t FakeDataModelToDataModel = 0x1C0;
-    inline constexpr uintptr_t FogColor = 0xFC;
-    inline constexpr uintptr_t FogEnd = 0x134;
-    inline constexpr uintptr_t FogStart = 0x138;
-    inline constexpr uintptr_t ForceNewAFKDuration = 0x1F8; // 0x6090DA0
-    inline constexpr uintptr_t FramePositionOffsetX = 0x4D4;
-    inline constexpr uintptr_t FramePositionOffsetY = 0x4DC;
-    inline constexpr uintptr_t FramePositionX = 0x4D0;
-    inline constexpr uintptr_t FramePositionY = 0x4D8;
-    inline constexpr uintptr_t FrameRotation = 0x188;
-    inline constexpr uintptr_t FrameSizeOffsetX = 0x4F8;
-    inline constexpr uintptr_t FrameSizeOffsetY = 0x4FC;
-    inline constexpr uintptr_t FrameSizeX = 0x4F0;
-    inline constexpr uintptr_t FrameSizeY = 0x4F4;
-    inline constexpr uintptr_t GameId = 0x190;
-    inline constexpr uintptr_t GameLoaded = 0x6B8;
-    inline constexpr uintptr_t Gravity = 0x990;
-    inline constexpr uintptr_t Health = 0x194;
-    inline constexpr uintptr_t HealthDisplayDistance = 0x2F8;
-    inline constexpr uintptr_t HipHeight = 0x1A0;
-    inline constexpr uintptr_t HumanoidDisplayName = 0xD0;
-    inline constexpr uintptr_t HumanoidState = 0x858;
-    inline constexpr uintptr_t HumanoidStateId = 0x20;
-    inline constexpr uintptr_t InputObject = 0x100;
-    inline constexpr uintptr_t InsetMaxX = 0x100;
-    inline constexpr uintptr_t InsetMaxY = 0x104;
-    inline constexpr uintptr_t InsetMinX = 0xF8;
-    inline constexpr uintptr_t InsetMinY = 0xFC;
-    inline constexpr uintptr_t InstanceAttributePointer1 = 0x40;
-    inline constexpr uintptr_t InstanceAttributePointer2 = 0x18;
-    inline constexpr uintptr_t InstanceCapabilities = 0xD08;
-    inline constexpr uintptr_t JobEnd = 0x1D8;
-    inline constexpr uintptr_t JobId = 0x138;
-    inline constexpr uintptr_t JobStart = 0x1D0;
-    inline constexpr uintptr_t Job_Name = 0x18;
-    inline constexpr uintptr_t JobsPointer = 0x7434340;
-    inline constexpr uintptr_t JumpPower = 0x1B0;
-    inline constexpr uintptr_t LocalPlayer = 0x120;
-    inline constexpr uintptr_t LocalScriptByteCode = 0x1A8;
-    inline constexpr uintptr_t LocalScriptBytecodePointer = 0x10;
-    inline constexpr uintptr_t LocalScriptHash = 0x1B8;
-    inline constexpr uintptr_t MaterialType = 0x0;
-    inline constexpr uintptr_t MaxHealth = 0x1B4;
-    inline constexpr uintptr_t MaxSlopeAngle = 0x1B8;
-    inline constexpr uintptr_t MeshPartColor3 = 0x1BC;
-    inline constexpr uintptr_t MeshPartTexture = 0x338;
-    inline constexpr uintptr_t ModelInstance = 0x340;
-    inline constexpr uintptr_t ModuleScriptByteCode = 0x150;
-    inline constexpr uintptr_t ModuleScriptBytecodePointer = 0x10;
-    inline constexpr uintptr_t ModuleScriptHash = 0x168;
-    inline constexpr uintptr_t MoonTextureId = 0xD8;
-    inline constexpr uintptr_t MousePosition = 0xEC;
-    inline constexpr uintptr_t MouseSensitivity = 0x738BDB4;
-    inline constexpr uintptr_t MoveDirection = 0x158;
-    inline constexpr uintptr_t Name = 0x80;
-    inline constexpr uintptr_t NameDisplayDistance = 0x304;
-    inline constexpr uintptr_t NameSize = 0x10;
-    inline constexpr uintptr_t OnDemandInstance = 0x38;
-    inline constexpr uintptr_t OutdoorAmbient = 0x108;
-    inline constexpr uintptr_t Parent = 0x50;
-    inline constexpr uintptr_t PartSize = 0x1CC;
-    inline constexpr uintptr_t Ping = 0xC8;
-    inline constexpr uintptr_t PlaceId = 0x198;
-    inline constexpr uintptr_t PlayerConfigurerPointer = 0x71E6C98;
-    inline constexpr uintptr_t PlayerMouse = 0xCA0;
-    inline constexpr uintptr_t Position = 0x11C;
-    inline constexpr uintptr_t Primitive = 0x170;
-    inline constexpr uintptr_t PrimitiveValidateValue = 0x6;
-    inline constexpr uintptr_t PrimitivesPointer1 = 0x3D0;
-    inline constexpr uintptr_t PrimitivesPointer2 = 0x210;
-    inline constexpr uintptr_t ProximityPromptActionText = 0xD0;
-    inline constexpr uintptr_t ProximityPromptEnabled = 0x156;
-    inline constexpr uintptr_t ProximityPromptGamepadKeyCode = 0x13C;
-    inline constexpr uintptr_t ProximityPromptHoldDuraction = 0x140;
-    inline constexpr uintptr_t ProximityPromptMaxActivationDistance = 0x148;
-    inline constexpr uintptr_t ProximityPromptMaxObjectText = 0xF0;
-    inline constexpr uintptr_t RenderJobToDataModel = 0x1B0;
-    inline constexpr uintptr_t RenderJobToFakeDataModel = 0x38;
-    inline constexpr uintptr_t RenderJobToRenderView = 0x218;
-    inline constexpr uintptr_t RequireBypass = 0x870;
-    inline constexpr uintptr_t RigType = 0x1C8;
-    inline constexpr uintptr_t Rotation = 0x100;
-    inline constexpr uintptr_t RunContext = 0x148;
-    inline constexpr uintptr_t ScriptContext = 0x3D0;
-    inline constexpr uintptr_t Sit = 0x1DC;
-    inline constexpr uintptr_t SkyboxBk = 0x100;
-    inline constexpr uintptr_t SkyboxDn = 0x128;
-    inline constexpr uintptr_t SkyboxFt = 0x150;
-    inline constexpr uintptr_t SkyboxLf = 0x178;
-    inline constexpr uintptr_t SkyboxRt = 0x1A0;
-    inline constexpr uintptr_t SkyboxUp = 0x1C8;
-    inline constexpr uintptr_t SoundId = 0xE0;
-    inline constexpr uintptr_t StarCount = 0x220;
-    inline constexpr uintptr_t StringLength = 0x10;
-    inline constexpr uintptr_t SunTextureId = 0x1F0;
-    inline constexpr uintptr_t TagList = 0x0;
-    inline constexpr uintptr_t TaskSchedulerMaxFPS = 0x1B0;
-    inline constexpr uintptr_t TaskSchedulerPointer = 0x7434168;
-    inline constexpr uintptr_t Team = 0x250;
-    inline constexpr uintptr_t TeamColor = 0xD0;
-    inline constexpr uintptr_t TextLabelText = 0xA90;
-    inline constexpr uintptr_t TextLabelVisible = 0x569;
-    inline constexpr uintptr_t Tool_Grip_Position = 0x464;
-    inline constexpr uintptr_t Transparency = 0xF0;
-    inline constexpr uintptr_t UserId = 0x288;
-    inline constexpr uintptr_t Value = 0xD0;
-    inline constexpr uintptr_t Velocity = 0x128;
-    inline constexpr uintptr_t ViewportSize = 0x2E8;
-    inline constexpr uintptr_t VisualEngine = 0x10;
-    inline constexpr uintptr_t VisualEnginePointer = 0x6F6FC30;
-    inline constexpr uintptr_t VisualEngineToDataModel1 = 0x700;
-    inline constexpr uintptr_t VisualEngineToDataModel2 = 0x1C0;
-    inline constexpr uintptr_t WalkSpeed = 0x1D4;
-    inline constexpr uintptr_t WalkSpeedCheck = 0x3A0;
-    inline constexpr uintptr_t Workspace = 0x178;
-    inline constexpr uintptr_t WorkspaceToWorld = 0x3D0;
-    inline constexpr uintptr_t viewmatrix = 0x4B0;
-}
+-- CustomMenu.lua
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local CoreGui = game:GetService("CoreGui")
+
+local LocalPlayer = Players.LocalPlayer
+local Mouse = LocalPlayer:GetMouse()
+
+local UI = {}
+
+-- Вспомогательные функции
+function UI:Tween(instance, props, time)
+	time = time or 0.2
+	local tween = TweenService:Create(instance, TweenInfo.new(time, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut), props)
+	tween:Play()
+	return tween
+end
+
+function UI:Merge(config, user)
+	user = user or {}
+	for k, v in pairs(config) do
+		if user[k] == nil and v ~= false then
+			user[k] = v
+		end
+	end
+	return user
+end
+
+-- Создание главного окна
+function UI:CreateWindow(opts)
+	opts = self:Merge({ Name = "Custom Menu" }, opts)
+
+	local root = Instance.new("ScreenGui")
+	root.Name = "CustomMenuRoot"
+	root.IgnoreGuiInset = true
+	root.ResetOnSpawn = false
+	root.Parent = RunService:IsStudio() and LocalPlayer:WaitForChild("PlayerGui") or CoreGui
+
+	local scale = Instance.new("UIScale", root)
+	scale.Scale = 1
+
+	-- Основной фрейм
+	local mainFrame = Instance.new("Frame")
+	mainFrame.Size = UDim2.new(0, 550, 0, 400)
+	mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+	mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+	mainFrame.BackgroundColor3 = Color3.fromRGB(23, 23, 23)
+	mainFrame.BorderSizePixel = 0
+	mainFrame.Parent = root
+
+	Instance.new("UICorner", mainFrame)
+
+	-- Тень
+	local shadowHolder = Instance.new("Frame")
+	shadowHolder.BackgroundTransparency = 1
+	shadowHolder.Size = UDim2.new(1, 0, 1, 0)
+	shadowHolder.ZIndex = 0
+	shadowHolder.Parent = mainFrame
+
+	local shadow = Instance.new("ImageLabel")
+	shadow.Image = "rbxassetid://6014261993"
+	shadow.BackgroundTransparency = 1
+	shadow.BorderSizePixel = 0
+	shadow.ZIndex = 0
+	shadow.ImageColor3 = Color3.new()
+	shadow.ImageTransparency = 0.5
+	shadow.ScaleType = Enum.ScaleType.Slice
+	shadow.SliceCenter = Rect.new(49, 49, 450, 450)
+	shadow.Size = UDim2.new(1, 47, 1, 47)
+	shadow.Position = UDim2.new(0.5, 0, 0.5, 0)
+	shadow.AnchorPoint = Vector2.new(0.5, 0.5)
+	shadow.Parent = shadowHolder
+
+	-- Верхняя панель
+	local topBar = Instance.new("Frame")
+	topBar.Size = UDim2.new(1, 0, 0, 40)
+	topBar.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+	topBar.BorderSizePixel = 0
+	topBar.Parent = mainFrame
+
+	Instance.new("UICorner", topBar)
+
+	local title = Instance.new("TextLabel")
+	title.Text = opts.Name
+	title.TextSize = 18
+	title.Font = Enum.Font.Gotham
+	title.TextColor3 = Color3.new(1, 1, 1)
+	title.BackgroundTransparency = 1
+	title.Size = UDim2.new(1, 0, 1, 0)
+	title.Position = UDim2.new(0, 14, 0, 0)
+	title.TextXAlignment = Enum.TextXAlignment.Left
+	title.Parent = topBar
+
+	-- Кнопка закрытия
+	local closeBtn = Instance.new("ImageButton")
+	closeBtn.Image = "rbxassetid://10747384394"
+	closeBtn.Size = UDim2.new(0, 20, 0, 20)
+	closeBtn.Position = UDim2.new(1, -8, 0, 10)
+	closeBtn.AnchorPoint = Vector2.new(1, 0)
+	closeBtn.BackgroundTransparency = 1
+	closeBtn.BorderSizePixel = 0
+	closeBtn.Parent = topBar
+
+	closeBtn.MouseButton1Click:Connect(function()
+		root:Destroy()
+	end)
+
+	-- Навигация (слева)
+	local navFrame = Instance.new("Frame")
+	navFrame.Size = UDim2.new(0, 180, 1, -41)
+	navFrame.Position = UDim2.new(0, 0, 0, 40)
+	navFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+	navFrame.BorderSizePixel = 0
+	navFrame.Parent = mainFrame
+
+	Instance.new("UICorner", navFrame)
+
+	local navHolder = Instance.new("Frame")
+	navHolder.BackgroundTransparency = 1
+	navHolder.Size = UDim2.new(1, 0, 1, 0)
+	navHolder.Parent = navFrame
+
+	local navPadding = Instance.new("UIPadding")
+	navPadding.PaddingLeft = UDim.new(0, 10)
+	navPadding.PaddingRight = UDim.new(0, 10)
+	navPadding.PaddingTop = UDim.new(0, 8)
+	navPadding.PaddingBottom = UDim.new(0, 8)
+	navPadding.Parent = navHolder
+
+	local navLayout = Instance.new("UIListLayout")
+	navLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	navLayout.Padding = UDim.new(0, 7)
+	navLayout.Parent = navHolder
+
+	-- Контент (справа)
+	local contentFrame = Instance.new("Frame")
+	contentFrame.BackgroundTransparency = 1
+	contentFrame.Size = UDim2.new(1, -180, 1, -40)
+	contentFrame.Position = UDim2.new(1, 0, 0, 40)
+	contentFrame.AnchorPoint = Vector2.new(1, 0)
+	contentFrame.BorderSizePixel = 0
+	contentFrame.Parent = mainFrame
+
+	-- Уведомления
+	local notifContainer = Instance.new("Frame")
+	notifContainer.BackgroundTransparency = 1
+	notifContainer.Size = UDim2.new(0, 300, 1, -10)
+	notifContainer.Position = UDim2.new(1, 0, 0, 0)
+	notifContainer.AnchorPoint = Vector2.new(1, 0)
+	notifContainer.Parent = root
+
+	local notifLayout = Instance.new("UIListLayout")
+	notifLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+	notifLayout.VerticalAlignment = Enum.VerticalAlignment.Bottom
+	notifLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	notifLayout.Padding = UDim.new(0, 10)
+	notifLayout.Parent = notifContainer
+
+	-- Перетаскивание
+	local dragging, dragStart, startPos
+	topBar.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			dragging = true
+			dragStart = input.Position
+			startPos = mainFrame.Position
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					dragging = false
+				end
+			end)
+		end
+	end)
+
+	UserInputService.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement and dragging then
+			local delta = input.Position - dragStart
+			mainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+		end
+	end)
+
+	-- Объект окна
+	local Window = {
+		Root = root,
+		Main = mainFrame,
+		Content = contentFrame,
+		NavHolder = navHolder,
+		NotifContainer = notifContainer,
+		ActiveTab = nil
+	}
+
+	-- Создание вкладки
+	function Window:CreateTab(tabOpts)
+		tabOpts = UI:Merge({ Name = "Tab", Icon = "rbxassetid://10723407389" }, tabOpts)
+
+		local tabButton = Instance.new("TextButton")
+		tabButton.Text = tabOpts.Name
+		tabButton.TextSize = 16
+		tabButton.Font = Enum.Font.Gotham
+		tabButton.TextColor3 = Color3.new(1, 1, 1)
+		tabButton.TextTransparency = 0.4
+		tabButton.BackgroundColor3 = Color3.fromRGB(28, 28, 28)
+		tabButton.BackgroundTransparency = 1
+		tabButton.BorderSizePixel = 0
+		tabButton.Size = UDim2.new(1, 0, 0, 35)
+		tabButton.Parent = navHolder
+
+		local icon = Instance.new("ImageLabel")
+		icon.Image = tabOpts.Icon
+		icon.ImageTransparency = 0.4
+		icon.Size = UDim2.new(0, 18, 0, 18)
+		icon.Position = UDim2.new(0, 5, 0.5, 0)
+		icon.AnchorPoint = Vector2.new(0, 0.5)
+		icon.BackgroundTransparency = 1
+		icon.BorderSizePixel = 0
+		icon.Parent = tabButton
+
+		local stroke = Instance.new("UIStroke")
+		stroke.Color = Color3.new(1, 1, 1)
+		stroke.Transparency = 0.96
+		stroke.Enabled = false
+		stroke.Parent = tabButton
+
+		Instance.new("UICorner", tabButton)
+
+		local padding = Instance.new("UIPadding")
+		padding.PaddingLeft = UDim.new(0, 30)
+		padding.Parent = tabButton
+
+		-- Контент вкладки
+		local tabContent = Instance.new("ScrollingFrame")
+		tabContent.Size = UDim2.new(1, 0, 1, 0)
+		tabContent.Position = UDim2.new(0.5, 0, 0.5, 0)
+		tabContent.AnchorPoint = Vector2.new(0.5, 0.5)
+		tabContent.BackgroundTransparency = 1
+		tabContent.BorderSizePixel = 0
+		tabContent.ScrollBarThickness = 4
+		tabContent.ScrollBarImageTransparency = 0.9
+		tabContent.Visible = false
+		tabContent.Parent = contentFrame
+
+		local layout = Instance.new("UIListLayout")
+		layout.SortOrder = Enum.SortOrder.LayoutOrder
+		layout.Padding = UDim.new(0, 10)
+		layout.Parent = tabContent
+
+		local pad = Instance.new("UIPadding")
+		pad.PaddingLeft = UDim.new(0, 10)
+		pad.PaddingRight = UDim.new(0, 12)
+		pad.PaddingTop = UDim.new(0, 10)
+		pad.PaddingBottom = UDim.new(0, 10)
+		pad.Parent = tabContent
+
+		local Tab = {
+			Button = tabButton,
+			Icon = icon,
+			Stroke = stroke,
+			Content = tabContent,
+			Active = false
+		}
+
+		function Tab:Activate()
+			if Tab.Active then return end
+			if Window.ActiveTab then
+				Window.ActiveTab:Deactivate()
+			end
+			Tab.Active = true
+			tabButton.TextTransparency = 0
+			icon.ImageTransparency = 0
+			tabButton.BackgroundTransparency = 0
+			stroke.Enabled = true
+			tabContent.Visible = true
+			Window.ActiveTab = Tab
+		end
+
+		function Tab:Deactivate()
+			if not Tab.Active then return end
+			Tab.Active = false
+			tabButton.TextTransparency = 0.4
+			icon.ImageTransparency = 0.4
+			tabButton.BackgroundTransparency = 1
+			stroke.Enabled = false
+			tabContent.Visible = false
+		end
+
+		tabButton.MouseEnter:Connect(function()
+			if not Tab.Active then
+				UI:Tween(tabButton, { TextTransparency = 0 })
+				UI:Tween(icon, { ImageTransparency = 0 })
+			end
+		end)
+
+		tabButton.MouseLeave:Connect(function()
+			if not Tab.Active then
+				UI:Tween(tabButton, { TextTransparency = 0.4 })
+				UI:Tween(icon, { ImageTransparency = 0.4 })
+			end
+		end)
+
+		tabButton.MouseButton1Click:Connect(function()
+			Tab:Activate()
+		end)
+
+		if not Window.ActiveTab then
+			Tab:Activate()
+		end
+
+		-- Label
+		function Tab:CreateLabel(labelOpts)
+			labelOpts = UI:Merge({ Text = "Label", Type = "Label" }, labelOpts)
+
+			local types = {
+				Label = { bg = Color3.fromRGB(25, 25, 25), stroke = Color3.new(1,1,1), text = Color3.new(1,1,1), icon = "rbxassetid://18824545160", iconColor = Color3.new(1,1,1) },
+				Info = { bg = Color3.fromRGB(10, 20, 25), stroke = Color3.fromRGB(40, 83, 104), text = Color3.fromRGB(61, 127, 158), icon = "rbxassetid://18824453094", iconColor = Color3.fromRGB(61, 127, 158) },
+				Warning = { bg = Color3.fromRGB(32, 31, 12), stroke = Color3.fromRGB(104, 101, 37), text = Color3.fromRGB(150, 147, 53), icon = "rbxassetid://18824479970", iconColor = Color3.fromRGB(150, 147, 53) },
+				Error = { bg = Color3.fromRGB(32, 14, 12), stroke = Color3.fromRGB(104, 38, 38), text = Color3.fromRGB(150, 54, 54), icon = "rbxassetid://18854112224", iconColor = Color3.fromRGB(150, 54, 54) }
+			}
+
+			local style = types[labelOpts.Type] or types.Label
+
+			local frame = Instance.new("Frame")
+			frame.Size = UDim2.new(1, 0, 0, 35)
+			frame.BackgroundColor3 = style.bg
+			frame.BorderSizePixel = 0
+			frame.Parent = tabContent
+
+			local stroke = Instance.new("UIStroke")
+			stroke.Color = style.stroke
+			stroke.Transparency = 0.96
+			stroke.Parent = frame
+
+			Instance.new("UICorner", frame)
+
+			local padding = Instance.new("UIPadding")
+			padding.PaddingLeft = UDim.new(0, 12)
+			padding.PaddingTop = UDim.new(0, 8)
+			padding.PaddingBottom = UDim.new(0, 8)
+			padding.Parent = frame
+
+			local textLabel = Instance.new("TextLabel")
+			textLabel.Text = labelOpts.Text
+			textLabel.TextSize = 18
+			textLabel.Font = Enum.Font.Gotham
+			textLabel.TextColor3 = style.text
+			textLabel.TextTransparency = 0.2
+			textLabel.BackgroundTransparency = 1
+			textLabel.Size = UDim2.new(0.85, 0, 1, 0)
+			textLabel.TextXAlignment = Enum.TextXAlignment.Left
+			textLabel.TextWrapped = true
+			textLabel.Parent = frame
+
+			local icon = Instance.new("ImageLabel")
+			icon.Image = style.icon
+			icon.ImageColor3 = style.iconColor
+			icon.ImageTransparency = 0.3
+			icon.Size = UDim2.new(0, 22, 0, 22)
+			icon.Position = UDim2.new(1, -10, 0, -1)
+			icon.AnchorPoint = Vector2.new(1, 0)
+			icon.BackgroundTransparency = 1
+			icon.BorderSizePixel = 0
+			icon.Parent = frame
+
+			frame.MouseEnter:Connect(function()
+				UI:Tween(textLabel, { TextTransparency = 0 })
+				UI:Tween(icon, { ImageTransparency = 0 })
+				UI:Tween(stroke, { Transparency = 0.9 })
+			end)
+
+			frame.MouseLeave:Connect(function()
+				UI:Tween(textLabel, { TextTransparency = 0.2 })
+				UI:Tween(icon, { ImageTransparency = 0.3 })
+				UI:Tween(stroke, { Transparency = 0.96 })
+			end)
+
+			return { SetText = function(t) textLabel.Text = t end }
+		end
+
+		-- Button
+		function Tab:CreateButton(btnOpts)
+			btnOpts = UI:Merge({ Name = "Button", Callback = function() end }, btnOpts)
+
+			local frame = Instance.new("Frame")
+			frame.Size = UDim2.new(1, 0, 0, 45)
+			frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+			frame.BorderSizePixel = 0
+			frame.Parent = tabContent
+
+			Instance.new("UICorner", frame)
+
+			local stroke = Instance.new("UIStroke")
+			stroke.Color = Color3.new(1,1,1)
+			stroke.Transparency = 0.96
+			stroke.Parent = frame
+
+			local padding = Instance.new("UIPadding")
+			padding.PaddingLeft = UDim.new(0, 12)
+			padding.PaddingTop = UDim.new(0, 8)
+			padding.PaddingBottom = UDim.new(0, 8)
+			padding.Parent = frame
+
+			local textLabel = Instance.new("TextLabel")
+			textLabel.Text = btnOpts.Name
+			textLabel.TextSize = 18
+			textLabel.Font = Enum.Font.Gotham
+			textLabel.TextColor3 = Color3.new(1,1,1)
+			textLabel.TextTransparency = 0.2
+			textLabel.BackgroundTransparency = 1
+			textLabel.Size = UDim2.new(0.85, 0, 1, 0)
+			textLabel.Parent = frame
+
+			local icon = Instance.new("ImageLabel")
+			icon.Image = "rbxassetid://18824415379"
+			icon.ImageTransparency = 0.3
+			icon.Size = UDim2.new(0, 25, 0, 25)
+			icon.Position = UDim2.new(1, -8, 0, 2)
+			icon.AnchorPoint = Vector2.new(1, 0)
+			icon.BackgroundTransparency = 1
+			icon.Parent = frame
+
+			local hover, down = false, false
+
+			frame.MouseEnter:Connect(function()
+				hover = true
+				if not down then
+					UI:Tween(textLabel, { TextTransparency = 0 })
+					UI:Tween(icon, { ImageTransparency = 0 })
+					UI:Tween(stroke, { Transparency = 0.9 })
+				end
+			end)
+
+			frame.MouseLeave:Connect(function()
+				hover = false
+				if not down then
+					UI:Tween(textLabel, { TextTransparency = 0.2 })
+					UI:Tween(icon, { ImageTransparency = 0.3 })
+					UI:Tween(stroke, { Transparency = 0.96 })
+				end
+			end)
+
+			frame.InputBegan:Connect(function(input)
+				if input.UserInputType == Enum.UserInputType.MouseButton1 and hover then
+					down = true
+					UI:Tween(frame, { BackgroundColor3 = Color3.fromRGB(28, 28, 28) })
+					UI:Tween(stroke, { Transparency = 0.9 })
+					btnOpts.Callback()
+				end
+			end)
+
+			frame.InputEnded:Connect(function(input)
+				if input.UserInputType == Enum.UserInputType.MouseButton1 then
+					down = false
+					if hover then
+						UI:Tween(frame, { BackgroundColor3 = Color3.fromRGB(25, 25, 25) })
+						UI:Tween(textLabel, { TextTransparency = 0 })
+						UI:Tween(icon, { ImageTransparency = 0 })
+						UI:Tween(stroke, { Transparency = 0.9 })
+					else
+						UI:Tween(frame, { BackgroundColor3 = Color3.fromRGB(25, 25, 25) })
+						UI:Tween(stroke, { Transparency = 0.96 })
+					end
+				end
+			end)
+
+			return { SetName = function(n) textLabel.Text = n end }
+		end
+
+		-- Toggle
+		function Tab:CreateToggle(tglOpts)
+			tglOpts = UI:Merge({ Name = "Toggle", Default = false, Callback = function() end }, tglOpts)
+
+			local frame = Instance.new("Frame")
+			frame.Size = UDim2.new(1, 0, 0, 45)
+			frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+			frame.BorderSizePixel = 0
+			frame.Parent = tabContent
+
+			Instance.new("UICorner", frame)
+
+			local stroke = Instance.new("UIStroke")
+			stroke.Color = Color3.new(1,1,1)
+			stroke.Transparency = 0.96
+			stroke.Parent = frame
+
+			local padding = Instance.new("UIPadding")
+			padding.PaddingLeft = UDim.new(0, 12)
+			padding.PaddingTop = UDim.new(0, 8)
+			padding.PaddingBottom = UDim.new(0, 8)
+			padding.Parent = frame
+
+			local textLabel = Instance.new("TextLabel")
+			textLabel.Text = tglOpts.Name
+			textLabel.TextSize = 18
+			textLabel.Font = Enum.Font.Gotham
+			textLabel.TextColor3 = Color3.new(1,1,1)
+			textLabel.TextTransparency = 0.2
+			textLabel.BackgroundTransparency = 1
+			textLabel.Size = UDim2.new(0.8, 0, 1, 0)
+			textLabel.Parent = frame
+
+			local toggleFrame = Instance.new("Frame")
+			toggleFrame.Size = UDim2.new(0, 25, 0, 25)
+			toggleFrame.Position = UDim2.new(1, -8, 0, 2)
+			toggleFrame.AnchorPoint = Vector2.new(1, 0)
+			toggleFrame.BackgroundColor3 = tglOpts.Default and Color3.fromRGB(0, 154, 255) or Color3.fromRGB(31, 31, 31)
+			toggleFrame.BorderSizePixel = 0
+			toggleFrame.Parent = frame
+
+			Instance.new("UICorner", toggleFrame)
+
+			local toggleStroke = Instance.new("UIStroke")
+			toggleStroke.Color = Color3.new(1,1,1)
+			toggleStroke.Transparency = 0.94
+			toggleStroke.Parent = toggleFrame
+
+			local check = Instance.new("ImageLabel")
+			check.Image = "rbxassetid://18837414354"
+			check.Size = UDim2.new(1, -5, 1, -5)
+			check.Position = UDim2.new(0.5, 0, 0.5, 0)
+			check.AnchorPoint = Vector2.new(0.5, 0.5)
+			check.BackgroundTransparency = 1
+			check.ImageTransparency = tglOpts.Default and 0 or 1
+			check.Parent = toggleFrame
+
+			local state = tglOpts.Default
+
+			frame.MouseButton1Click:Connect(function()
+				state = not state
+				toggleFrame.BackgroundColor3 = state and Color3.fromRGB(0, 154, 255) or Color3.fromRGB(31, 31, 31)
+				check.ImageTransparency = state and 0 or 1
+				tglOpts.Callback(state)
+			end)
+
+			return { SetState = function(v)
+				state = v
+				toggleFrame.BackgroundColor3 = v and Color3.fromRGB(0, 154, 255) or Color3.fromRGB(31, 31, 31)
+				check.ImageTransparency = v and 0 or 1
+				tglOpts.Callback(v)
+			end }
+		end
+
+		-- Slider
+		function Tab:CreateSlider(sliderOpts)
+			sliderOpts = UI:Merge({ Name = "Slider", Min = 0, Max = 100, Default = 50, Round = 0, Callback = function() end }, sliderOpts)
+
+			local frame = Instance.new("Frame")
+			frame.Size = UDim2.new(1, 0, 0, 50)
+			frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+			frame.BorderSizePixel = 0
+			frame.Parent = tabContent
+
+			Instance.new("UICorner", frame)
+
+			local stroke = Instance.new("UIStroke")
+			stroke.Color = Color3.new(1,1,1)
+			stroke.Transparency = 0.96
+			stroke.Parent = frame
+
+			local padding = Instance.new("UIPadding")
+			padding.PaddingLeft = UDim.new(0, 12)
+			padding.PaddingRight = UDim.new(0, 12)
+			padding.PaddingTop = UDim.new(0, 8)
+			padding.PaddingBottom = UDim.new(0, 8)
+			padding.Parent = frame
+
+			local title = Instance.new("TextLabel")
+			title.Text = sliderOpts.Name
+			title.TextSize = 18
+			title.Font = Enum.Font.Gotham
+			title.TextColor3 = Color3.new(1,1,1)
+			title.TextTransparency = 0.2
+			title.BackgroundTransparency = 1
+			title.Size = UDim2.new(0.85, -10, 1, -10)
+			title.Parent = frame
+
+			local valueLabel = Instance.new("TextLabel")
+			valueLabel.Text = tostring(sliderOpts.Default)
+			valueLabel.TextSize = 18
+			valueLabel.Font = Enum.Font.Gotham
+			valueLabel.TextColor3 = Color3.new(1,1,1)
+			valueLabel.TextTransparency = 0.2
+			valueLabel.BackgroundTransparency = 1
+			valueLabel.Size = UDim2.new(0, 80, 1, -10)
+			valueLabel.Position = UDim2.new(1, 0, 0, 0)
+			valueLabel.AnchorPoint = Vector2.new(1, 0)
+			valueLabel.TextXAlignment = Enum.TextXAlignment.Right
+			valueLabel.Parent = frame
+
+			local track = Instance.new("Frame")
+			track.Size = UDim2.new(1, 0, 0, 6)
+			track.Position = UDim2.new(0, 0, 1, 0)
+			track.AnchorPoint = Vector2.new(0, 1)
+			track.BackgroundColor3 = Color3.fromRGB(23, 23, 23)
+			track.BorderSizePixel = 0
+			track.Parent = frame
+
+			Instance.new("UICorner", track)
+
+			local thumb = Instance.new("Frame")
+			thumb.BackgroundColor3 = Color3.new(1,1,1)
+			thumb.BackgroundTransparency = 0.8
+			thumb.BorderSizePixel = 0
+			thumb.Parent = track
+
+			Instance.new("UICorner", thumb)
+
+			local function updateFromMouse()
+				local rel = math.clamp((Mouse.X - track.AbsolutePosition.X) / track.AbsoluteSize.X, 0, 1)
+				local val = sliderOpts.Min + (sliderOpts.Max - sliderOpts.Min) * rel
+				val = math.floor(val * 10^sliderOpts.Round + 0.5) / 10^sliderOpts.Round
+				thumb.Size = UDim2.new(rel, 0, 1, 0)
+				valueLabel.Text = tostring(val)
+				sliderOpts.Callback(val)
+			end
+
+			local dragging = false
+			track.MouseButton1Down:Connect(function()
+				dragging = true
+				updateFromMouse()
+			end)
+
+			UserInputService.InputEnded:Connect(function(input)
+				if input.UserInputType == Enum.UserInputType.MouseButton1 then
+					dragging = false
+				end
+			end)
+
+			UserInputService.InputChanged:Connect(function(input)
+				if input.UserInputType == Enum.UserInputType.MouseMovement and dragging then
+					updateFromMouse()
+				end
+			end)
+
+			-- Инициализация
+			local initRel = (sliderOpts.Default - sliderOpts.Min) / (sliderOpts.Max - sliderOpts.Min)
+			thumb.Size = UDim2.new(initRel, 0, 1, 0)
+			valueLabel.Text = tostring(sliderOpts.Default)
+
+			return { SetValue = function(v)
+				local rel = (v - sliderOpts.Min) / (sliderOpts.Max - sliderOpts.Min)
+				rel = math.clamp(rel, 0, 1)
+				thumb.Size = UDim2.new(rel, 0, 1, 0)
+				valueLabel.Text = tostring(v)
+				sliderOpts.Callback(v)
+			end }
+		end
+
+		-- Dropdown
+		function Tab:CreateDropdown(ddOpts)
+			ddOpts = UI:Merge({ Name = "Dropdown", Items = {}, Default = nil, Callback = function() end }, ddOpts)
+
+			local frame = Instance.new("Frame")
+			frame.Size = UDim2.new(1, 0, 0, 45)
+			frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+			frame.ClipsDescendants = true
+			frame.BorderSizePixel = 0
+			frame.Parent = tabContent
+
+			Instance.new("UICorner", frame)
+
+			local stroke = Instance.new("UIStroke")
+			stroke.Color = Color3.new(1,1,1)
+			stroke.Transparency = 0.96
+			stroke.Parent = frame
+
+			local padding = Instance.new("UIPadding")
+			padding.PaddingLeft = UDim.new(0, 12)
+			padding.PaddingTop = UDim.new(0, 8)
+			padding.PaddingBottom = UDim.new(0, 8)
+			padding.Parent = frame
+
+			local title = Instance.new("TextLabel")
+			title.Text = ddOpts.Name
+			title.TextSize = 18
+			title.Font = Enum.Font.Gotham
+			title.TextColor3 = Color3.new(1,1,1)
+			title.TextTransparency = 0.2
+			title.BackgroundTransparency = 1
+			title.Size = UDim2.new(0.85, 0, 0, 29)
+			title.Parent = frame
+
+			local icon = Instance.new("ImageLabel")
+			icon.Image = "rbxassetid://18824644623"
+			icon.ImageTransparency = 0.3
+			icon.Size = UDim2.new(0, 25, 0, 25)
+			icon.Position = UDim2.new(1, -8, 0, 2)
+			icon.AnchorPoint = Vector2.new(1, 0)
+			icon.BackgroundTransparency = 1
+			icon.Parent = frame
+
+			local listFrame = Instance.new("Frame")
+			listFrame.BackgroundTransparency = 1
+			listFrame.Size = UDim2.new(1, -12, 0, 0)
+			listFrame.Position = UDim2.new(0, 0, 0, 32)
+			listFrame.Visible = false
+			listFrame.Parent = frame
+
+			local listLayout = Instance.new("UIListLayout")
+			listLayout.Padding = UDim.new(0, 5)
+			listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+			listLayout.Parent = listFrame
+
+			local listPad = Instance.new("UIPadding")
+			listPad.PaddingLeft = UDim.new(0, 2)
+			listPad.PaddingTop = UDim.new(0, 2)
+			listPad.Parent = listFrame
+
+			local selectedValue = ddOpts.Default
+			if selectedValue then
+				title.Text = ddOpts.Name .. " (" .. selectedValue .. ")"
+			end
+
+			local isOpen = false
+			local items = {}
+
+			local function addItem(text)
+				local itemFrame = Instance.new("Frame")
+				itemFrame.Size = UDim2.new(1, -10, 0, 20)
+				itemFrame.BackgroundColor3 = (selectedValue == text) and Color3.fromRGB(31,31,31) or Color3.fromRGB(27,27,27)
+				itemFrame.BorderSizePixel = 0
+				itemFrame.Parent = listFrame
+
+				Instance.new("UICorner", itemFrame)
+
+				local itemStroke = Instance.new("UIStroke")
+				itemStroke.Color = Color3.new(1,1,1)
+				itemStroke.Transparency = 0.96
+				itemStroke.Enabled = (selectedValue == text)
+				itemStroke.Parent = itemFrame
+
+				local itemText = Instance.new("TextLabel")
+				itemText.Text = text
+				itemText.TextSize = 14
+				itemText.Font = Enum.Font.Gotham
+				itemText.TextColor3 = Color3.new(1,1,1)
+				itemText.TextTransparency = (selectedValue == text) and 0.2 or 0.24
+				itemText.BackgroundTransparency = 1
+				itemText.Size = UDim2.new(1, 0, 1, 0)
+				itemText.Parent = itemFrame
+
+				itemFrame.MouseButton1Click:Connect(function()
+					if selectedValue then
+						local old = items[selectedValue]
+						if old then
+							old.Frame.BackgroundColor3 = Color3.fromRGB(27,27,27)
+							old.Stroke.Enabled = false
+							old.Text.TextTransparency = 0.24
+						end
+					end
+					selectedValue = text
+					itemFrame.BackgroundColor3 = Color3.fromRGB(31,31,31)
+					itemStroke.Enabled = true
+					itemText.TextTransparency = 0.2
+					title.Text = ddOpts.Name .. " (" .. text .. ")"
+					ddOpts.Callback(text)
+					toggleDropdown()
+				end)
+
+				items[text] = { Frame = itemFrame, Stroke = itemStroke, Text = itemText }
+			end
+
+			local function toggleDropdown()
+				isOpen = not isOpen
+				listFrame.Visible = isOpen
+				if isOpen then
+					local height = #ddOpts.Items * 20 + 10
+					frame:TweenSize(UDim2.new(1, 0, 0, 45 + height), "Out", "Quint", 0.2)
+				else
+					frame:TweenSize(UDim2.new(1, 0, 0, 45), "Out", "Quint", 0.2)
+				end
+			end
+
+			for _, item in ipairs(ddOpts.Items) do
+				addItem(item)
+			end
+
+			frame.MouseButton1Click:Connect(function()
+				toggleDropdown()
+			end)
+
+			frame.MouseEnter:Connect(function()
+				UI:Tween(icon, { ImageTransparency = 0 })
+				UI:Tween(title, { TextTransparency = 0 })
+				UI:Tween(stroke, { Transparency = 0.9 })
+			end)
+
+			frame.MouseLeave:Connect(function()
+				UI:Tween(icon, { ImageTransparency = 0.3 })
+				UI:Tween(title, { TextTransparency = 0.2 })
+				UI:Tween(stroke, { Transparency = 0.96 })
+			end)
+
+			return {
+				AddItem = addItem,
+				SetName = function(n) title.Text = n end
+			}
+		end
+
+		-- InputBox
+		function Tab:CreateInput(inputOpts)
+			inputOpts = UI:Merge({ Name = "Input", Default = "", Callback = function() end }, inputOpts)
+
+			local frame = Instance.new("Frame")
+			frame.Size = UDim2.new(1, 0, 0, 45)
+			frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+			frame.BorderSizePixel = 0
+			frame.Parent = tabContent
+
+			Instance.new("UICorner", frame)
+
+			local stroke = Instance.new("UIStroke")
+			stroke.Color = Color3.new(1,1,1)
+			stroke.Transparency = 0.96
+			stroke.Parent = frame
+
+			local padding = Instance.new("UIPadding")
+			padding.PaddingLeft = UDim.new(0, 12)
+			padding.PaddingTop = UDim.new(0, 8)
+			padding.PaddingBottom = UDim.new(0, 8)
+			padding.Parent = frame
+
+			local title = Instance.new("TextLabel")
+			title.Text = inputOpts.Name
+			title.TextSize = 18
+			title.Font = Enum.Font.Gotham
+			title.TextColor3 = Color3.new(1,1,1)
+			title.TextTransparency = 0.2
+			title.BackgroundTransparency = 1
+			title.Size = UDim2.new(0.85, 0, 1, 0)
+			title.Parent = frame
+
+			local textBox = Instance.new("TextBox")
+			textBox.Text = inputOpts.Default
+			textBox.PlaceholderText = "Enter text..."
+			textBox.TextSize = 14
+			textBox.Font = Enum.Font.Gotham
+			textBox.TextColor3 = Color3.new(1,1,1)
+			textBox.TextTransparency = 0.2
+			textBox.BackgroundColor3 = Color3.fromRGB(31, 31, 31)
+			textBox.Size = UDim2.new(0, 120, 0, 25)
+			textBox.Position = UDim2.new(1, -8, 0, 2)
+			textBox.AnchorPoint = Vector2.new(1, 0)
+			textBox.BorderSizePixel = 0
+			textBox.Parent = frame
+
+			Instance.new("UICorner", textBox)
+
+			local boxStroke = Instance.new("UIStroke")
+			boxStroke.Color = Color3.new(1,1,1)
+			boxStroke.Transparency = 0.96
+			boxStroke.Parent = textBox
+
+			textBox:GetPropertyChangedSignal("Text"):Connect(function()
+				inputOpts.Callback(textBox.Text)
+			end)
+
+			return {
+				SetText = function(t) textBox.Text = t end,
+				GetText = function() return textBox.Text end
+			}
+		end
+
+		return Tab
+	end
+
+	-- Уведомление
+	function Window:Notify(notifOpts)
+		notifOpts = UI:Merge({
+			Title = "Notification",
+			Description = "This is a notification.",
+			Button = { Name = "OK", Callback = function() end }
+		}, notifOpts)
+
+		local notif = Instance.new("Frame")
+		notif.Size = UDim2.new(0, 280, 0, 120)
+		notif.BackgroundColor3 = Color3.fromRGB(23, 23, 23)
+		notif.BorderSizePixel = 0
+		notif.Parent = notifContainer
+
+		Instance.new("UICorner", notif)
+
+		local scale = Instance.new("UIScale")
+		scale.Scale = 0.7
+		scale.Parent = notif
+
+		UI:Tween(scale, { Scale = 1 }, 0.2)
+
+		local top = Instance.new("Frame")
+		top.Size = UDim2.new(1, 0, 0, 30)
+		top.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+		top.BorderSizePixel = 0
+		top.Parent = notif
+
+		local titleLabel = Instance.new("TextLabel")
+		titleLabel.Text = notifOpts.Title
+		titleLabel.TextSize = 16
+		titleLabel.Font = Enum.Font.GothamBold
+		titleLabel.TextColor3 = Color3.new(1,1,1)
+		titleLabel.BackgroundTransparency = 1
+		titleLabel.Size = UDim2.new(1, -30, 1, 0)
+		titleLabel.Position = UDim2.new(0, 10, 0, 0)
+		titleLabel.Parent = top
+
+		local closeBtn = Instance.new("ImageButton")
+		closeBtn.Image = "rbxassetid://10747384394"
+		closeBtn.Size = UDim2.new(0, 20, 0, 20)
+		closeBtn.Position = UDim2.new(1, -5, 0.5, 0)
+		closeBtn.AnchorPoint = Vector2.new(1, 0.5)
+		closeBtn.BackgroundTransparency = 1
+		closeBtn.BorderSizePixel = 0
+		closeBtn.Parent = top
+
+		closeBtn.MouseButton1Click:Connect(function()
+			notif:Destroy()
+		end)
+
+		local desc = Instance.new("TextLabel")
+		desc.Text = notifOpts.Description
+		desc.TextSize = 14
+		desc.Font = Enum.Font.Gotham
+		desc.TextColor3 = Color3.new(1,1,1)
+		desc.TextTransparency = 0.6
+		desc.BackgroundTransparency = 1
+		desc.Size = UDim2.new(1, -20, 0, 50)
+		desc.Position = UDim2.new(0, 10, 0, 40)
+		desc.TextWrapped = true
+		desc.Parent = notif
+
+		if notifOpts.Button then
+			local btn = Instance.new("TextButton")
+			btn.Text = notifOpts.Button.Name
+			btn.TextSize = 14
+			btn.Font = Enum.Font.Gotham
+			btn.TextColor3 = Color3.new(1,1,1)
+			btn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+			btn.Size = UDim2.new(0.5, 0, 0, 25)
+			btn.Position = UDim2.new(0.5, 0, 1, -10)
+			btn.AnchorPoint = Vector2.new(0.5, 1)
+			btn.Parent = notif
+
+			Instance.new("UICorner", btn)
+
+			btn.MouseButton1Click:Connect(function()
+				notifOpts.Button.Callback()
+				notif:Destroy()
+			end)
+		end
+
+		return notif
+	end
+
+	-- Масштабирование
+	function Window:SetScale(s)
+		UI:Tween(scale, { Scale = s })
+	end
+
+	return Window
+end
+
+return UI
