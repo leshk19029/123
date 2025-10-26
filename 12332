@@ -931,119 +931,105 @@ function Apoto:CreateWindow(ConfigArgs)
 			end)
 		end
 		function thisTab:CreateToggle(args)
-			args.Callback = args.Callback or function() end
-			args.Default = args.Default or false
-			args.Text = args.Text or "Toggle"
-			local Checkbox = Instance.new("Frame")
-			local UICorner = Instance.new("UICorner")
-			local SliderText = Instance.new("TextLabel")
-			local ImageButton = Instance.new("ImageButton")
-			local tapIcon = Instance.new("ImageLabel")
-			local UICorner_2 = Instance.new("UICorner")
-			local UIStroke = Instance.new("UIStroke")
+    args.Callback = args.Callback or function() end
+    args.Default = args.Default or false
+    args.Text = args.Text or "Toggle"
+    local Checkbox = Instance.new("Frame")
+    local UICorner = Instance.new("UICorner")
+    local SliderText = Instance.new("TextLabel")
+    local ImageButton = Instance.new("ImageButton")
+    local tapIcon = Instance.new("ImageLabel")
+    local UICorner_2 = Instance.new("UICorner")
+    local UIStroke = Instance.new("UIStroke")
 
-			Checkbox.Name = tabName.."_Checkbox"
-			Checkbox.Parent = TabContentsFrame
-			Checkbox.BackgroundColor3 = Color3.fromRGB(17, 18, 22)
-			Checkbox.BorderColor3 = Color3.fromRGB(0, 0, 0)
-			Checkbox.BorderSizePixel = 0
-			Checkbox.Position = UDim2.new(0, 0, 0.562723994, 0)
-			Checkbox.Size = UDim2.new(0, 423, 0, 45)
-			Checkbox.Visible = false
+    Checkbox.Name = tabName.."_Checkbox"
+    Checkbox.Parent = TabContentsFrame
+    Checkbox.BackgroundColor3 = Color3.fromRGB(17, 18, 22)
+    Checkbox.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Checkbox.BorderSizePixel = 0
+    Checkbox.Position = UDim2.new(0, 0, 0.562723994, 0)
+    Checkbox.Size = UDim2.new(0, 423, 0, 45)
+    Checkbox.Visible = true  -- Изменено: всегда visible, loadTabContents управляет
 
-			UICorner.CornerRadius = UDim.new(0, 6)
-			UICorner.Parent = Checkbox
+    UICorner.CornerRadius = UDim.new(0, 6)
+    UICorner.Parent = Checkbox
 
-			SliderText.Name = "SliderText"
-			SliderText.Parent = Checkbox
-			SliderText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-			SliderText.BackgroundTransparency = 1.000
-			SliderText.BorderColor3 = Color3.fromRGB(0, 0, 0)
-			SliderText.BorderSizePixel = 0
-			SliderText.Position = UDim2.new(0.0283687934, 0, 0, 0)
-			SliderText.Size = UDim2.new(0, 366, 0, 45)
-			SliderText.FontFace = Font.new('rbxasset://fonts/families/TitilliumWeb.json', Enum.FontWeight.Bold, Enum.FontStyle.Normal)
-			SliderText.Text = args.Text
-			SliderText.TextColor3 = Color3.fromRGB(193, 193, 193)
-			SliderText.TextSize = 21.000
-			SliderText.TextWrapped = true
-			SliderText.TextXAlignment = Enum.TextXAlignment.Left
+    SliderText.Name = "SliderText"
+    SliderText.Parent = Checkbox
+    SliderText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    SliderText.BackgroundTransparency = 1.000
+    SliderText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    SliderText.BorderSizePixel = 0
+    SliderText.Position = UDim2.new(0.0283687934, 0, 0, 0)
+    SliderText.Size = UDim2.new(0, 366, 0, 45)
+    SliderText.FontFace = Font.new('rbxasset://fonts/families/TitilliumWeb.json', Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+    SliderText.Text = args.Text
+    SliderText.TextColor3 = Color3.fromRGB(193, 193, 193)
+    SliderText.TextSize = 21.000
+    SliderText.TextWrapped = true
+    SliderText.TextXAlignment = Enum.TextXAlignment.Left
 
-			ImageButton.Parent = Checkbox
-			ImageButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-			ImageButton.BackgroundTransparency = 1.000
-			ImageButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
-			ImageButton.BorderSizePixel = 0
-			ImageButton.Size = UDim2.new(0, 423, 0, 45)
-			ImageButton.Visible = true
-			ImageButton.ZIndex = 2
+    ImageButton.Parent = Checkbox
+    ImageButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    ImageButton.BackgroundTransparency = 1.000
+    ImageButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    ImageButton.BorderSizePixel = 0
+    ImageButton.Size = UDim2.new(0, 423, 0, 45)
+    ImageButton.Visible = true
 
-			tapIcon.Name = "tapIcon"
-			tapIcon.Parent = Checkbox
-			tapIcon.AnchorPoint = Vector2.new(0.5, 0.5)
-			tapIcon.BackgroundColor3 = setHueAndSaturation(ConfigArgs.AccentColor3,.5,.8) 
-			tapIcon.BackgroundTransparency = 1.000
-			tapIcon.BorderSizePixel = 0
-			tapIcon.LayoutOrder = 11
-			tapIcon.Position = UDim2.new(0.949999988, 0, 0.5, 0)
-			tapIcon.Size = UDim2.new(0, 15, 0, 15)
-			tapIcon.ZIndex = 1
-			tapIcon.ImageRectOffset = Vector2.new(164, 844)
-			tapIcon.ImageRectSize = Vector2.new(36, 36)
+    tapIcon.Name = "tapIcon"
+    tapIcon.Parent = Checkbox
+    tapIcon.AnchorPoint = Vector2.new(0.5, 0.5)
+    tapIcon.BackgroundColor3 = setHueAndSaturation(ConfigArgs.AccentColor3,.5,.8) 
+    tapIcon.BackgroundTransparency = 1.000  -- Начинаем с прозрачного
+    tapIcon.BorderSizePixel = 0
+    tapIcon.LayoutOrder = 11
+    tapIcon.Position = UDim2.new(0.949999988, 0, 0.5, 0)
+    tapIcon.Size = UDim2.new(0, 20, 0, 20)  -- Фиксированный размер 20x20 для всех
+    tapIcon.ZIndex = 1
+    -- Убрал ImageRectOffset, если не нужен (замените на Image, если требуется иконка)
 
-			UICorner_2.CornerRadius = UDim.new(0, 16)
-			UICorner_2.Parent = tapIcon
+    UICorner_2.CornerRadius = UDim.new(0, 10)  -- Радиус для круглого вида (половина размера)
+    UICorner_2.Parent = tapIcon
 
-			UIStroke.Parent = tapIcon
-			UIStroke.Thickness = 2.8
-			UIStroke.Color = setHueAndSaturation(ConfigArgs.AccentColor3,.5,.8) 
-			tapIcon.Size = UDim2.new(0,15,0,15)
+    UIStroke.Parent = tapIcon
+    UIStroke.Thickness = 2.8
+    UIStroke.Color = setHueAndSaturation(ConfigArgs.AccentColor3,.5,.8) 
 
-			if args.Default == true then
-				UIStroke.Thickness = 0
-				UIStroke.Enabled = true
-				tapIcon.Size = UDim2.new(0,20,0,20)
-			end
+    local enabled = args.Default
 
-			local enabled = args.Default
-			assignClickAnimation(ImageButton)
-			addConnection(ImageButton.MouseButton1Click,function() 
-				enabled = not enabled
-				args.Callback(enabled)
-				if enabled == true then
-					for i=0,1,.1 do
-						UIStroke.Thickness = 2.8 - (2.8 * i)
-						tapIcon.BackgroundTransparency = 1 - i
-						task.wait()
-					end
-				else
-					for i=0,1,.1 do
-						UIStroke.Thickness = (2.8 * i)
-						tapIcon.BackgroundTransparency = i
-						task.wait()
-					end
-				end
-			end)
-			local toggle = {}
-			function toggle:Set(Enabled: BoolValue)
-				args.Callback(Enabled)
-				if Enabled == true then
-					for i=0,1,.1 do
-						UIStroke.Thickness = 2.8 - (2.8 * i)
-						tapIcon.BackgroundTransparency = 1 - i
-						task.wait()
-					end
-				else
-					for i=0,1,.1 do
-						UIStroke.Thickness = (2.8 * i)
-						tapIcon.BackgroundTransparency = i
-						task.wait()
-					end
-				end
-			end
-			return toggle
+    -- Инициализация состояния (применяем сразу при создании)
+    local function applyState(state)
+        local tweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)  -- Быстрая анимация для init
+        if state then
+            -- Включено: фон непрозрачный, stroke тонкий/невидимый
+            game:GetService("TweenService"):Create(tapIcon, tweenInfo, {BackgroundTransparency = 0}):Play()
+            game:GetService("TweenService"):Create(UIStroke, tweenInfo, {Thickness = 0}):Play()
+        else
+            -- Выключено: фон прозрачный, stroke видимый
+            game:GetService("TweenService"):Create(tapIcon, tweenInfo, {BackgroundTransparency = 1}):Play()
+            game:GetService("TweenService"):Create(UIStroke, tweenInfo, {Thickness = 2.8}):Play()
+        end
+    end
 
-		end
+    -- Применяем начальное состояние
+    applyState(enabled)
+
+    assignClickAnimation(ImageButton)
+    addConnection(ImageButton.MouseButton1Click, function() 
+        enabled = not enabled
+        args.Callback(enabled)
+        applyState(enabled)  -- Используем функцию анимации
+    end)
+
+    local toggle = {}
+    function toggle:Set(Enabled)
+        enabled = Enabled
+        args.Callback(Enabled)
+        applyState(Enabled)
+    end
+    return toggle
+end
 		function thisTab:CreatePlayerSelector(args)
 			args.Text = args.Text or "Player Selector"
 			args.Callback = args.Callback or function() end
