@@ -1,2003 +1,2063 @@
--- Services
+local ApotoUI
+local SideBar
+local UIPadding
+local settingsBTN
+local TabsScrollingFrame
+local UIListLayout
+local MenuFrame
+local TabTitle
+local UIGradient
+local TabContentsFrame
+local UIListLayout_2
+local UIPadding_2
+local UIPadding_3
+local TopBar
+local GUITitle
+local UIGradient_2
+local ImageLabel
+local UIGradient_3
 
-local Players = game:GetService("Players")
-local TweenService = game:GetService("TweenService")
-local HTTPService = game:GetService("HttpService")
-local UserInputService = game:GetService("UserInputService")
-local RunService = game:GetService("RunService")
-local CoreGui = game:GetService("CoreGui")
-
--- Variables
-
-local LocalPlayer = Players.LocalPlayer
-local Viewport = workspace.CurrentCamera.ViewportSize
-local Mouse = LocalPlayer:GetMouse()
-
--- Library
-
-local SkyUI = {}
-
-function SkyUI:AnimateElement(Object, Target, OnComplete)
-	local Animation = TweenService:Create(Object, TweenInfo.new(0.2, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut), Target)
-	Animation.Completed:Connect(OnComplete or function() end)
-	Animation:Play()
-end
-
-function SkyUI:CheckOptions(Defaults, Options)
-	Options = Options or {}
-
-	for Key, Value in pairs(Defaults) do
-		if Options[Key] == nil and Options[Key] ~= false then
-			Options[Key] = Value
-		end
-	end
-
-	return Options
-end
-
-function SkyUI:CreateInterface(Options)
-	Options = SkyUI:CheckOptions({
-		Name = "SkyUI"
-	}, Options)
-
-	local Interface = {
-		CurrentPage = nil	
+local Apoto = {
+	Connections = {},
+	contents = {
+		Tabs = {}
 	}
+}
 
-	-- StarterGui.SkyUI
-	Interface["g1"] = Instance.new("ScreenGui", CoreGui)
-	Interface["g1"].Name = [[SkyUI]]
-	Interface["g1"].IgnoreGuiInset = true
+function Apoto:CreateWindow(ConfigArgs)
+	local defaultFont = Font.new("rbxasset://fonts/families/TitilliumWeb.json", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+	local Players = game:GetService("Players")
 	
-	Interface["scale1"] = Instance.new("UIScale", Interface["g1"])
-
-	-- StarterGui.SkyUI.MainFrame
-	Interface["f2"] = Instance.new("Frame", Interface["g1"])
-	Interface["f2"].BorderSizePixel = 0
-	Interface["f2"].BackgroundColor3 = Color3.fromRGB(23, 23, 23)
-	Interface["f2"].AnchorPoint = Vector2.new(0.5, 0.5)
-	Interface["f2"].Size = UDim2.new(0, 550, 0, 400)
-	Interface["f2"].Position = UDim2.new(0.5, 0, 0.5, 0)
-	Interface["f2"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-	Interface["f2"].Name = [[MainFrame]]
-
-	-- StarterGui.SkyUI.MainFrame.UICorner
-	Interface["c3"] = Instance.new("UICorner", Interface["f2"])
-
-	-- StarterGui.SkyUI.MainFrame.Shadow
-	Interface["s4"] = Instance.new("Frame", Interface["f2"])
-	Interface["s4"].ZIndex = 0
-	Interface["s4"].BorderSizePixel = 0
-	Interface["s4"].Size = UDim2.new(1, 0, 1, 0)
-	Interface["s4"].Name = [[Shadow]]
-	Interface["s4"].BackgroundTransparency = 1
-
-	-- StarterGui.SkyUI.MainFrame.Shadow.ShadowImage
-	Interface["i5"] = Instance.new("ImageLabel", Interface["s4"])
-	Interface["i5"].ZIndex = 0
-	Interface["i5"].BorderSizePixel = 0
-	Interface["i5"].SliceCenter = Rect.new(49, 49, 450, 450)
-	Interface["i5"].ScaleType = Enum.ScaleType.Slice
-	Interface["i5"].ImageTransparency = 0.5
-	Interface["i5"].ImageColor3 = Color3.fromRGB(0, 0, 0)
-	Interface["i5"].AnchorPoint = Vector2.new(0.5, 0.5)
-	Interface["i5"].Image = [[rbxassetid://6014261993]]
-	Interface["i5"].Size = UDim2.new(1, 47, 1, 47)
-	Interface["i5"].BackgroundTransparency = 1
-	Interface["i5"].Name = [[ShadowImage]]
-	Interface["i5"].Position = UDim2.new(0.5, 0, 0.5, 0)
-
-	-- StarterGui.SkyUI.MainFrame.Header
-	Interface["h6"] = Instance.new("Frame", Interface["f2"])
-	Interface["h6"].BorderSizePixel = 0
-	Interface["h6"].BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-	Interface["h6"].Size = UDim2.new(1, 0, 0, 40)
-	Interface["h6"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-	Interface["h6"].Name = [[Header]]
-
-	-- StarterGui.SkyUI.MainFrame.Header.Line
-	Interface["l7"] = Instance.new("Frame", Interface["h6"])
-	Interface["l7"].ZIndex = 2
-	Interface["l7"].BorderSizePixel = 0
-	Interface["l7"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	Interface["l7"].AnchorPoint = Vector2.new(0, 1)
-	Interface["l7"].Size = UDim2.new(1, 0, 0, 1)
-	Interface["l7"].Position = UDim2.new(0, 0, 1, 0)
-	Interface["l7"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-	Interface["l7"].Name = [[Line]]
-	Interface["l7"].BackgroundTransparency = 0.95
-
-	-- StarterGui.SkyUI.MainFrame.Header.NameLabel
-	Interface["n8"] = Instance.new("TextLabel", Interface["h6"])
-	Interface["n8"].BorderSizePixel = 0
-	Interface["n8"].TextXAlignment = Enum.TextXAlignment.Left
-	Interface["n8"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	Interface["n8"].TextSize = 18
-	Interface["n8"].FontFace = Font.new([[rbxassetid://11702779517]], Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-	Interface["n8"].TextColor3 = Color3.fromRGB(255, 255, 255)
-	Interface["n8"].BackgroundTransparency = 1
-	Interface["n8"].Size = UDim2.new(1, 0, 1, 0)
-	Interface["n8"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-	Interface["n8"].Text = Options.Name
-	Interface["n8"].Name = [[NameLabel]]
-
-	-- StarterGui.SkyUI.MainFrame.Header.NameLabel.UIPadding
-	Interface["p9"] = Instance.new("UIPadding", Interface["n8"])
-	Interface["p9"].PaddingLeft = UDim.new(0, 14)
-
-	-- StarterGui.SkyUI.MainFrame.Header.CloseBtn
-	Interface["x10"] = Instance.new("ImageLabel", Interface["h6"])
-	Interface["x10"].BorderSizePixel = 0
-	Interface["x10"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	Interface["x10"].AnchorPoint = Vector2.new(1, 0)
-	Interface["x10"].Image = [[rbxassetid://10747384394]]
-	Interface["x10"].Size = UDim2.new(0, 20, 0, 20)
-	Interface["x10"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-	Interface["x10"].BackgroundTransparency = 1
-	Interface["x10"].Name = [[CloseBtn]]
-	Interface["x10"].Position = UDim2.new(1, -8, 0, 10)
-
-	-- StarterGui.SkyUI.MainFrame.Header.MinBtn
-	Interface["m11"] = Instance.new("ImageLabel", Interface["h6"])
-	Interface["m11"].BorderSizePixel = 0
-	Interface["m11"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	Interface["m11"].AnchorPoint = Vector2.new(1, 0)
-	Interface["m11"].Image = [[rbxassetid://10734896206]]
-	Interface["m11"].Size = UDim2.new(0, 20, 0, 20)
-	Interface["m11"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-	Interface["m11"].BackgroundTransparency = 1
-	Interface["m11"].Name = [[MinBtn]]
-	Interface["m11"].Position = UDim2.new(1, -33, 0, 10)
-
-	-- StarterGui.SkyUI.MainFrame.Header.UICorner
-	Interface["c12"] = Instance.new("UICorner", Interface["h6"])
-
-	-- StarterGui.SkyUI.MainFrame.Header.Extension
-	Interface["e13"] = Instance.new("Frame", Interface["h6"])
-	Interface["e13"].BorderSizePixel = 0
-	Interface["e13"].BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-	Interface["e13"].AnchorPoint = Vector2.new(0, 1)
-	Interface["e13"].Size = UDim2.new(1, 0, 0.25, 0)
-	Interface["e13"].Position = UDim2.new(0, 0, 1, 0)
-	Interface["e13"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-	Interface["e13"].Name = [[Extension]]
-
-	-- StarterGui.SkyUI.MainFrame.Content
-	Interface["ct14"] = Instance.new("Frame", Interface["f2"])
-	Interface["ct14"].BorderSizePixel = 0
-	Interface["ct14"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	Interface["ct14"].AnchorPoint = Vector2.new(1, 0)
-	Interface["ct14"].Size = UDim2.new(1, -180, 1, -40)
-	Interface["ct14"].Position = UDim2.new(1, 0, 0, 40)
-	Interface["ct14"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-	Interface["ct14"].Name = [[Content]]
-	Interface["ct14"].BackgroundTransparency = 1
-
-	-- StarterGui.SkyUI.MainFrame.Sidebar
-	Interface["sb15"] = Instance.new("Frame", Interface["f2"])
-	Interface["sb15"].BorderSizePixel = 0
-	Interface["sb15"].BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-	Interface["sb15"].Size = UDim2.new(0, 180, 1, -41)
-	Interface["sb15"].Position = UDim2.new(0, 0, 0, 40)
-	Interface["sb15"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-	Interface["sb15"].Name = [[Sidebar]]
-
-	-- StarterGui.SkyUI.MainFrame.Sidebar.UICorner
-	Interface["c16"] = Instance.new("UICorner", Interface["sb15"])
-
-	-- StarterGui.SkyUI.MainFrame.Sidebar.TopCover
-	Interface["tc17"] = Instance.new("Frame", Interface["sb15"])
-	Interface["tc17"].BorderSizePixel = 0
-	Interface["tc17"].BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-	Interface["tc17"].Size = UDim2.new(1, 0, 0, 20)
-	Interface["tc17"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-	Interface["tc17"].Name = [[TopCover]]
-
-	-- StarterGui.SkyUI.MainFrame.Sidebar.BottomCover
-	Interface["bc18"] = Instance.new("Frame", Interface["sb15"])
-	Interface["bc18"].BorderSizePixel = 0
-	Interface["bc18"].BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-	Interface["bc18"].AnchorPoint = Vector2.new(0, 1)
-	Interface["bc18"].Size = UDim2.new(1, 0, 0, 20)
-	Interface["bc18"].Position = UDim2.new(0, 0, 1, 0)
-	Interface["bc18"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-	Interface["bc18"].Name = [[BottomCover]]
-
-	-- StarterGui.SkyUI.MainFrame.Sidebar.Border
-	Interface["b19"] = Instance.new("Frame", Interface["sb15"])
-	Interface["b19"].ZIndex = 2
-	Interface["b19"].BorderSizePixel = 0
-	Interface["b19"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	Interface["b19"].AnchorPoint = Vector2.new(1, 0)
-	Interface["b19"].Size = UDim2.new(0, 1, 1, 0)
-	Interface["b19"].Position = UDim2.new(1, 0, 0, 0)
-	Interface["b19"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-	Interface["b19"].Name = [[Border]]
-	Interface["b19"].BackgroundTransparency = 0.95
-
-	-- StarterGui.SkyUI.MainFrame.Sidebar.Items
-	Interface["it20"] = Instance.new("Frame", Interface["sb15"])
-	Interface["it20"].BorderSizePixel = 0
-	Interface["it20"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	Interface["it20"].Size = UDim2.new(1, 0, 1, 0)
-	Interface["it20"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-	Interface["it20"].Name = [[Items]]
-	Interface["it20"].BackgroundTransparency = 1
-
-	-- StarterGui.SkyUI.MainFrame.Sidebar.Items.UIPadding
-	Interface["p21"] = Instance.new("UIPadding", Interface["it20"])
-	Interface["p21"].PaddingTop = UDim.new(0, 8)
-	Interface["p21"].PaddingRight = UDim.new(0, 10)
-	Interface["p21"].PaddingLeft = UDim.new(0, 10)
-	Interface["p21"].PaddingBottom = UDim.new(0, 8)
-
-	-- StarterGui.SkyUI.MainFrame.Sidebar.Items.UIListLayout
-	Interface["l22"] = Instance.new("UIListLayout", Interface["it20"])
-	Interface["l22"].Padding = UDim.new(0, 7)
-	Interface["l22"].SortOrder = Enum.SortOrder.LayoutOrder
+	local minimizeAnim = true
+	local instantClose = false
 	
-	-- StarterGui.SkyUI.Alerts
-	Interface["a23"] = Instance.new("Frame", Interface["g1"]);
-	Interface["a23"]["BorderSizePixel"] = 0;
-	Interface["a23"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-	Interface["a23"]["AnchorPoint"] = Vector2.new(1, 0);
-	Interface["a23"]["Size"] = UDim2.new(0, 300, 1, -10);
-	Interface["a23"]["Position"] = UDim2.new(1, 0, 0, 0);
-	Interface["a23"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-	Interface["a23"]["Name"] = [[Alerts]];
-	Interface["a23"]["BackgroundTransparency"] = 1;
-
-	-- StarterGui.SkyUI.Alerts.UIListLayout
-	Interface["l24"] = Instance.new("UIListLayout", Interface["a23"]);
-	Interface["l24"]["HorizontalAlignment"] = Enum.HorizontalAlignment.Center;
-	Interface["l24"]["Padding"] = UDim.new(0, 10);
-	Interface["l24"]["VerticalAlignment"] = Enum.VerticalAlignment.Bottom;
-	Interface["l24"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
-
-	
-	Interface["x10"].InputBegan:Connect(function(Input, GPE)
-		if GPE then return end
-
-		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
-			Interface:Remove()
+	local function getPlayersAndIcons()
+		local players = Players:GetPlayers()
+		local playerIcons = {}
+		for _, player in pairs(players) do
+			local userId = player.UserId
+			local thumbType = Enum.ThumbnailType.HeadShot
+			local thumbSize = Enum.ThumbnailSize.Size420x420
+			local content, isReady = Players:GetUserThumbnailAsync(userId, thumbType, thumbSize)
+			table.insert(playerIcons,{
+				Name = player.Name,
+				Icon = content
+			})
 		end
-	end)
-	
-	local DragArea = Interface["h6"]
-
-	local IsDragging
-	local DragInput
-	local DragStartPosition
-	local StartPosition
-
-	function SkyUI:_MoveInterface(Input)
-		local Delta = Input.Position - DragStartPosition
-		DragArea.Parent.Position = UDim2.new(StartPosition.X.Scale, StartPosition.X.Offset + Delta.X, StartPosition.Y.Scale, StartPosition.Y.Offset + Delta.Y)
+		return playerIcons
+	end
+	local function addConnection(event, func)
+		local signal = event:Connect(func)
+		table.insert(Apoto.Connections, signal)
+		return signal
 	end
 
-	DragArea.InputBegan:Connect(function(Input)
-		if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
-			IsDragging = true
-			DragStartPosition = Input.Position
-			StartPosition = DragArea.Parent.Position
+	local function assignClickAnimation(Button,clipsDescendants)
+		local player = game:GetService("Players").LocalPlayer
+		local mouse = player:GetMouse()
+		if clipsDescendants == nil then
+			clipsDescendants = true
+		end
+		addConnection(Button.MouseButton1Click, function()
+			local sound = Instance.new("Sound")
+			sound.Parent = game
+			sound.Volume = 0.25
+			sound.SoundId = 'rbxassetid://6895079853'
+			sound:Play()
+			local x, y = mouse.X, mouse.Y
 
-			Input.Changed:Connect(function()
-				if Input.UserInputState == Enum.UserInputState.End then
-					IsDragging = false
+			Button.ClipsDescendants = true
+			if clipsDescendants == false then
+				Button.ClipsDescendants = false
+			end
+			local frame = Instance.new("Frame")
+			local UiCorner = Instance.new("UICorner")
+
+			frame.AnchorPoint = Vector2.new(0.5, 0.5)
+			frame.Position = UDim2.new(0, x - Button.AbsolutePosition.X, 0, y - Button.AbsolutePosition.Y)
+			frame.Size = UDim2.new(0, 1, 0, 1)
+			frame.Parent = Button
+			frame.Transparency = .2
+			frame.BackgroundColor3 = Color3.new(0.886, 0.886, 0.886)
+			frame.ZIndex = 0 
+
+			UiCorner.Parent = frame
+			UiCorner.CornerRadius = UDim.new(1, 0)
+
+			local tween = game:GetService("TweenService"):Create(frame, TweenInfo.new(1.5, Enum.EasingStyle.Cubic, Enum.EasingDirection.Out), {
+				Size = UDim2.new(0, 200, 0, 200),
+				BackgroundTransparency = 1
+			})
+			tween:Play()
+			tween.Completed:Connect(function()
+				frame:Destroy()
+			end)
+			sound:Destroy()
+		end)
+	end
+
+	local function loadTabContents(tabName)
+		for _, v in pairs(TabContentsFrame:GetChildren()) do
+			if v.ClassName == 'TextLabel' or v.ClassName == 'Frame' then
+				if string.find(v.Name,tabName) then
+					v.Visible = true
+				else
+					v.Visible = false
+				end			
+			end
+		end
+	end
+
+	local function Color3ToRGB(color)
+		return Color3.new(math.floor(color.R * 255),math.floor(color.G * 255),math.floor(color.B * 255))
+	end
+
+	local function DPRound(decimal,points)
+		local pow = math.pow(10,points)
+		local newDP = decimal * pow
+		newDP = math.floor(newDP)
+		return newDP / pow
+	end
+
+	local function setHueAndSaturation(color3,Sat,Value)
+		local hue, sat, val = color3:ToHSV()
+		return Color3.fromHSV(hue,Sat,Value)
+	end
+
+	ConfigArgs = ConfigArgs or {}
+	ConfigArgs.Name = ConfigArgs.Name or "Apoto UI Menu"
+	ConfigArgs.Icon = ConfigArgs.Icon or "rbxassetid://18820555586"
+	ConfigArgs.AccentColor3 = ConfigArgs.AccentColor3 or Color3.new(0.2, 0.6, 1)
+
+	ApotoUI = Instance.new("ScreenGui")
+	SideBar = Instance.new("Frame")
+	UIPadding = Instance.new("UIPadding")
+	settingsBTN = Instance.new("ImageButton")
+	TabsScrollingFrame = Instance.new("ScrollingFrame")
+	UIListLayout = Instance.new("UIListLayout")
+	MenuFrame = Instance.new("Frame")
+	TabTitle = Instance.new("TextLabel")
+	UIGradient = Instance.new("UIGradient")
+	TabContentsFrame = Instance.new("ScrollingFrame")
+	UIListLayout_2 = Instance.new("UIListLayout")
+	UIPadding_2 = Instance.new("UIPadding")
+	UIPadding_3 = Instance.new("UIPadding")
+	TopBar = Instance.new("Frame")
+	GUITitle = Instance.new("TextLabel")
+	UIGradient_2 = Instance.new("UIGradient")
+	ImageLabel = Instance.new("ImageLabel")
+	UIGradient_3 = Instance.new("UIGradient")
+	local SettingsPanel = Instance.new("Frame")
+
+	ApotoUI.Name = "ApotoUI"
+	ApotoUI.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+	ApotoUI.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+	ApotoUI.ResetOnSpawn = false
+
+	SideBar.Name = "SideBar"
+	SideBar.Parent = TopBar
+	SideBar.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+	SideBar.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	SideBar.BorderSizePixel = 0
+	SideBar.Position = UDim2.new(0, 0,0.984, 0)
+	SideBar.Size = UDim2.new(0, 237, 0, 310)
+
+	UIPadding.Parent = SideBar
+	UIPadding.PaddingLeft = UDim.new(0, 10)
+
+	SettingsPanel.Name = "SettingsPanel"
+	SettingsPanel.Parent = SideBar
+	SettingsPanel.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
+	SettingsPanel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	SettingsPanel.BorderSizePixel = 0
+	SettingsPanel.Position = UDim2.new(0, 0, 0.870967746, 0)
+	SettingsPanel.Size = UDim2.new(1, 0, 0, 40)
+	SettingsPanel.ZIndex = 5
+
+	settingsBTN.Name = "settingsBTN"
+	settingsBTN.Parent = SettingsPanel
+	settingsBTN.BackgroundTransparency = 1.000
+	settingsBTN.LayoutOrder = 1
+	settingsBTN.Position = UDim2.new(0.0421940945, 0, 0, 7)
+	settingsBTN.Size = UDim2.new(0, 25, 0, 25)
+	settingsBTN.ZIndex = 2
+	settingsBTN.Image = "rbxassetid://3926307971"
+	settingsBTN.ImageRectOffset = Vector2.new(324, 124)
+	settingsBTN.ImageRectSize = Vector2.new(36, 36)
+
+	local TextLabel77 = Instance.new("TextLabel")
+	TextLabel77.Parent = SettingsPanel
+	TextLabel77.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	TextLabel77.BackgroundTransparency = 1.000
+	TextLabel77.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	TextLabel77.BorderSizePixel = 0
+	TextLabel77.Position = UDim2.new(0.177215189, 0, 0, 7)
+	TextLabel77.Size = UDim2.new(0, 185, 0, 25)
+	TextLabel77.FontFace = defaultFont
+	TextLabel77.Text = "Settings"
+	TextLabel77.TextColor3 = Color3.fromRGB(253, 253, 253)
+	TextLabel77.TextSize = 30.000
+	TextLabel77.TextXAlignment = Enum.TextXAlignment.Left
+
+	TabsScrollingFrame.Name = "TabsScrollingFrame"
+	TabsScrollingFrame.Parent = SideBar
+	TabsScrollingFrame.Active = true
+	TabsScrollingFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	TabsScrollingFrame.BackgroundTransparency = 1.000
+	TabsScrollingFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	TabsScrollingFrame.BorderSizePixel = 0
+	TabsScrollingFrame.Size = UDim2.new(0, 243, 0, 262)
+	TabsScrollingFrame.ScrollBarImageTransparency = 1
+
+	UIListLayout.Parent = TabsScrollingFrame
+	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	UIListLayout.Padding = UDim.new(0, 5)
+
+	UIPadding_3.Parent = TabsScrollingFrame
+	UIPadding_3.PaddingTop = UDim.new(0, 5)
+	UIPadding_3.PaddingLeft = UDim.new(0,7)
+
+	MenuFrame.Name = "MenuFrame"
+	MenuFrame.Parent = TopBar
+	MenuFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 25)
+	MenuFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	MenuFrame.BorderSizePixel = 0
+	MenuFrame.Position = UDim2.new(0.345, 0,0.984, 0)
+	MenuFrame.Size = UDim2.new(0, 450, 0, 310)
+
+	TabTitle.Name = "TabTitle"
+	TabTitle.Parent = MenuFrame
+	TabTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	TabTitle.BackgroundTransparency = 1.000
+	TabTitle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	TabTitle.BorderSizePixel = 0
+	TabTitle.Position = UDim2.new(0.0111111114, 0, 0.00055286038, 0)
+	TabTitle.Size = UDim2.new(0, 444, 0, 31)
+	TabTitle.Font = Enum.Font.SourceSansBold
+	TabTitle.Text = "Select A Tab"
+	TabTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+	TabTitle.TextSize = 22.000
+	TabTitle.TextXAlignment = Enum.TextXAlignment.Left
+
+	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, ConfigArgs.AccentColor3), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(225, 226, 227))}
+	UIGradient.Rotation = -180
+	UIGradient.Parent = TabTitle
+
+	TabContentsFrame.Name = "TabContentsFrame"
+	TabContentsFrame.Parent = MenuFrame
+	TabContentsFrame.Active = true
+	TabContentsFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	TabContentsFrame.BackgroundTransparency = 1
+	TabContentsFrame.ScrollBarThickness = 4
+	TabContentsFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	TabContentsFrame.BorderSizePixel = 0
+	TabContentsFrame.Position = UDim2.new(0, 0, 0.100000001, 0)
+	TabContentsFrame.Size = UDim2.new(0, 448, 0, 279)
+
+	UIListLayout_2.Parent = TabContentsFrame
+	UIListLayout_2.SortOrder = Enum.SortOrder.LayoutOrder
+	UIListLayout_2.Padding = UDim.new(0, 4)
+
+	UIPadding_2.Parent = TabContentsFrame
+	UIPadding_2.PaddingLeft = UDim.new(0, 5)
+
+	TopBar.Name = "TopBar"
+	TopBar.Parent = ApotoUI
+	TopBar.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+	TopBar.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	TopBar.BorderSizePixel = 0
+	TopBar.Position = UDim2.new(0.311196476, 0, 0.351635993, 0)
+	TopBar.Size = UDim2.new(0, 687, 0, 40)
+
+	GUITitle.Name = "GUITitle"
+	GUITitle.Parent = TopBar
+	GUITitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	GUITitle.BackgroundTransparency = 1.000
+	GUITitle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	GUITitle.BorderSizePixel = 0
+	GUITitle.Position = UDim2.new(0,45, 7.62939464e-07, 0)
+	GUITitle.Size = UDim2.new(0, 463, 0, 39)
+	GUITitle.Font = Enum.Font.SourceSansBold
+	GUITitle.Text = ConfigArgs.Name
+	GUITitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+	GUITitle.TextSize = 24.000
+	GUITitle.TextXAlignment = Enum.TextXAlignment.Left
+
+	UIGradient_2.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, ConfigArgs.AccentColor3), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(225, 226, 227))}
+	UIGradient_2.Rotation = -180
+	UIGradient_2.Parent = GUITitle
+
+	ImageLabel.Parent = TopBar
+	ImageLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	ImageLabel.BackgroundTransparency = 1.000
+	ImageLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	ImageLabel.BorderSizePixel = 0
+	ImageLabel.Position = UDim2.new(0.0029112082, 0, 0, 0)
+	ImageLabel.Size = UDim2.new(0, 40, 0, 40)
+	ImageLabel.Image = ConfigArgs.Icon
+
+	UIGradient_3.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, ConfigArgs.AccentColor3), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(225, 226, 227))}
+	UIGradient_3.Rotation = -180
+	UIGradient_3.Parent = ImageLabel
+
+	local NotificationTable = Instance.new("Frame")
+	NotificationTable.Name = "NotificationTable"
+	NotificationTable.Parent = ApotoUI
+	NotificationTable.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	NotificationTable.BackgroundTransparency = 1
+	NotificationTable.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	NotificationTable.BorderSizePixel = 0
+	NotificationTable.Position = UDim2.new(0.846871555, 0, 0.01813, 0)
+	NotificationTable.Size = UDim2.new(0.143249184, 0, 0.96545, 0)
+
+	local close = Instance.new("ImageButton")
+	local remove = Instance.new("ImageButton")
+	local uiCorner44432 = Instance.new("UICorner")
+	local minimized = false
+	local closed = false
+	local closedPos = UDim2.new(0.311, 0,0.352, 0)
+
+	uiCorner44432.Parent = TopBar
+	uiCorner44432.CornerRadius = UDim.new(0,0)
+
+	close.Name = "close"
+	close.Parent = TopBar
+	close.BackgroundTransparency = 1.000
+	close.LayoutOrder = 5
+	close.Position = UDim2.new(1, -30,0.175, 0)
+	close.Size = UDim2.new(0, 25, 0, 25)
+	close.ZIndex = 2
+	close.Image = "rbxassetid://3926305904"
+	close.ImageRectOffset = Vector2.new(284, 4)
+	close.ImageRectSize = Vector2.new(24, 24)
+
+	remove.Name = "remove"
+	remove.Parent = close
+	remove.BackgroundTransparency = 1.000
+	remove.LayoutOrder = 6
+	remove.Position = UDim2.new(-1,0,0,0)
+	remove.Size = UDim2.new(0, 25, 0, 25)
+	remove.ZIndex = 2
+	remove.Image = "rbxassetid://3926307971"
+	remove.ImageRectOffset = Vector2.new(884, 284)
+	remove.ImageRectSize = Vector2.new(36, 36)
+
+	local TemporaryText = Instance.new("TextLabel")
+
+	TemporaryText.Name = "TabTitle"
+	TemporaryText.Parent = TabContentsFrame
+	TemporaryText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	TemporaryText.BackgroundTransparency = 1.000
+	TemporaryText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	TemporaryText.BorderSizePixel = 0
+	TemporaryText.Position = UDim2.new(0.0111111114, 0, 0.00055286038, 0)
+	TemporaryText.Size = UDim2.new(0, 444, 0, 31)
+	TemporaryText.Font = Enum.Font.SourceSansBold
+	TemporaryText.Text = `<b>{ConfigArgs.Name}</b> x <b>Apoto UI v1 </b>`
+	TemporaryText.TextColor3 = Color3.fromRGB(150, 150, 150)
+	TemporaryText.TextSize = 15
+	TemporaryText.RichText = true
+	TemporaryText.TextXAlignment = Enum.TextXAlignment.Left
+	TemporaryText.TextYAlignment = Enum.TextYAlignment.Top
+
+	local ScrollingFrame555 = Instance.new("ScrollingFrame")
+	ScrollingFrame555.Parent = SettingsPanel
+	ScrollingFrame555.Active = true
+	ScrollingFrame555.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	ScrollingFrame555.BackgroundTransparency = 1.000
+	ScrollingFrame555.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	ScrollingFrame555.BorderSizePixel = 0
+	ScrollingFrame555.ScrollBarThickness = 4
+	ScrollingFrame555.Position = UDim2.new(0.0527426153, 0, 0.119354837, 0)
+	ScrollingFrame555.Size = UDim2.new(0, 214, 0, 265)
+
+	local UILIST5 = Instance.new("UIListLayout")
+	UILIST5.Parent = ScrollingFrame555
+	UILIST5.Padding = UDim.new(0,5)
+
+	UIPadding.Parent = ScrollingFrame555
+	UIPadding.PaddingRight = UDim.new(0, 10)
+
+	local dragging = false
+	local dragInput = nil
+	local dragStart = nil
+	local startPosition = nil
+
+	local function update(input)
+		local delta = input.Position - dragStart
+		TopBar.Position = UDim2.new(startPosition.X.Scale, startPosition.X.Offset + delta.X, startPosition.Y.Scale, startPosition.Y.Offset + delta.Y)
+	end
+
+	TopBar.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = true
+			dragStart = input.Position
+			startPosition = TopBar.Position
+
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					dragging = false
 				end
 			end)
 		end
 	end)
 
-	DragArea.InputChanged:Connect(function(Input)
-		if Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch then
-			DragInput = Input
+	TopBar.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+			dragInput = input
 		end
 	end)
 
-	UserInputService.InputChanged:Connect(function(Input)
-		if Input == DragInput and IsDragging then
-			SkyUI:_MoveInterface(Input)
+	game:GetService("UserInputService").InputChanged:Connect(function(input)
+		if input == dragInput and dragging then
+			update(input)
 		end
-	end)
+	end) 
+
+	local window = {}
+
+	function window:CreateNotification(args)
+		args.Duration = args.Duration or 3
+		args.Title = args.Title or "Notification"
+		args.Description = args.Description or "UI by Axom. You forgot to put a description."
+
+		local Notification = Instance.new("Frame")
+		local UICorner = Instance.new("UICorner")
+		local UIStroke = Instance.new("UIStroke")
+		local Title = Instance.new("TextLabel")
+		local BodyText = Instance.new("TextLabel")
+		local Frame = Instance.new("Frame")
+		local notifications = Instance.new("ImageButton")
+		local UIListLayout = Instance.new("UIListLayout")
+
+		UIStroke.Parent = Notification
+		UIStroke.Thickness = 1.8
+		UIStroke.Color = Color3.new(.8,.8,.8)
+
+		Notification.Name = "Notification"
+		Notification.Parent = NotificationTable
+		Notification.BackgroundColor3 = Color3.fromRGB(15, 15, 25)
+		Notification.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		Notification.BorderSizePixel = 0
+		Notification.BackgroundTransparency = 0.15
+		Notification.ClipsDescendants = true
+		Notification.Position = UDim2.new(0.934865892, 0, 0.991055429, 0)
+		Notification.Size = UDim2.new(0.87356323, 0, 0, 0)
+
+		UICorner.Parent = Notification
+
+		Title.Name = "Title"
+		Title.Parent = Notification
+		Title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		Title.BackgroundTransparency = 1.000
+		Title.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		Title.BorderSizePixel = 0
+		Title.Position = UDim2.new(0.149122804, 0, 0.0588235296, 0)
+		Title.Size = UDim2.new(0.820175409, 0, 0, 25)
+		Title.FontFace = Font.new('rbxasset://fonts/families/TitilliumWeb.json', Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+		Title.Text = args.Title
+		Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+		Title.TextSize = 25.000
+		Title.TextXAlignment = Enum.TextXAlignment.Left
+
+		BodyText.Name = "BodyText"
+		BodyText.Parent = Notification
+		BodyText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		BodyText.BackgroundTransparency = 1.000
+		BodyText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		BodyText.BorderSizePixel = 0
+		BodyText.Position = UDim2.new(0.026, 0, 0.33, 0)
+		BodyText.Size = UDim2.new(0.94, 0, 0.53, 0)
+		BodyText.FontFace = Font.new('rbxasset://fonts/families/TitilliumWeb.json', Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+		BodyText.Text = args.Description
+		BodyText.TextColor3 = Color3.fromRGB(191, 191, 191)
+		BodyText.TextSize = 18.000
+		BodyText.TextWrapped = true
+		BodyText.TextXAlignment = Enum.TextXAlignment.Left
+		BodyText.TextYAlignment = Enum.TextYAlignment.Top
+
+		Frame.Parent = Notification
+		Frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		Frame.BorderSizePixel = 0
+		Frame.Position = UDim2.new(0.026, 0, 0.92, 0)
+		Frame.Size = UDim2.new(0.94, 0, 0.03, 0)
+
+		notifications.Name = "notifications"
+		notifications.Parent = Notification
+		notifications.BackgroundTransparency = 1.000
+		notifications.LayoutOrder = 1
+		notifications.Position = UDim2.new(0.02, 0, 0.08, 0)
+		notifications.Size = UDim2.new(0.11, 0, 0.245, 0)
+		notifications.ZIndex = 2
+		notifications.Image = "rbxassetid://3926305904"
+		notifications.ImageRectOffset = Vector2.new(844, 564)
+		notifications.ImageRectSize = Vector2.new(36, 36)
+
+		UIListLayout.Parent = NotificationTable
+		UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+		UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+		UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Bottom
+		UIListLayout.Padding = UDim.new(0, 15)
+
+		coroutine.wrap(function()
+			local showTween = game:GetService("TweenService"):Create(Notification, TweenInfo.new(.7, Enum.EasingStyle.Cubic, Enum.EasingDirection.Out), {Size = UDim2.new(0.87356323, 0, 0.0912343487, 0)})
+			showTween:Play()
+
+			local thingy = game:GetService("TweenService"):Create(Frame, TweenInfo.new(args.Duration, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0.03, 0)})
+			thingy:Play()
+			wait(args.Duration)
+
+			local hideTween = game:GetService("TweenService"):Create(Notification, TweenInfo.new(.7, Enum.EasingStyle.Cubic, Enum.EasingDirection.Out), {Size = UDim2.new(0.87356323, 0, 0, 0)})
+			local hideStrokeTween = game:GetService("TweenService"):Create(UIStroke, TweenInfo.new(.7, Enum.EasingStyle.Cubic, Enum.EasingDirection.Out), {Thickness = 0})
+			hideTween:Play()
+			hideStrokeTween:Play()
+			hideTween.Completed:Wait()
+			Notification:Destroy()
+		end)()
+	end
 	
-	function Interface:ShowAlert(Options)
-		Options = SkyUI:CheckOptions({
-			Title = "Alert",
-			Message = "This is an example alert!",
-			Action = {
-				Name = "Okay!",
-				Function = function()
-					
-				end,
-			}
-		}, Options)
-		
-		local Alert = {
-			IsHovered = false,
-			IsPressed = false
-		}
-		
-		-- StarterGui.SkyUI.Alert
-		Alert["f25"] = Instance.new("Frame", Interface["a23"]);
-		Alert["f25"]["BorderSizePixel"] = 0;
-		Alert["f25"]["BackgroundColor3"] = Color3.fromRGB(23, 23, 23);
-		Alert["f25"]["AnchorPoint"] = Vector2.new(1, 1);
-		Alert["f25"]["Size"] = UDim2.new(0, 279, 0, 155);
-		Alert["f25"]["Position"] = UDim2.new(1, -10, 1, -10);
-		Alert["f25"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-		Alert["f25"]["Name"] = [[Alert]];
-
-		-- StarterGui.SkyUI.Alert.UICorner
-		Alert["c26"] = Instance.new("UICorner", Alert["f25"]);
-		
-		-- StarterGui.SkyUI.Alert.UIScale
-		Alert["s27"] = Instance.new("UIScale", Alert["f25"]);
-		Alert["s27"]["Scale"] = 0.5
-
-		-- StarterGui.SkyUI.Alert.UIStroke
-		Alert["st28"] = Instance.new("UIStroke", Alert["f25"]);
-		Alert["st28"]["Transparency"] = 0.9;
-		Alert["st28"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
-		Alert["st28"]["Color"] = Color3.fromRGB(255, 255, 255);
-
-		-- StarterGui.SkyUI.Alert.ActionBtn
-		Alert["ab29"] = Instance.new("TextLabel", Alert["f25"]);
-		Alert["ab29"]["BorderSizePixel"] = 0;
-		Alert["ab29"]["BackgroundColor3"] = Color3.fromRGB(29, 29, 29);
-		Alert["ab29"]["TextSize"] = 16;
-		Alert["ab29"]["TextTransparency"] = 0.2;
-		Alert["ab29"]["FontFace"] = Font.new([[rbxassetid://11702779517]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-		Alert["ab29"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-		Alert["ab29"]["AnchorPoint"] = Vector2.new(0, 1);
-		Alert["ab29"]["Size"] = UDim2.new(1, -20, 0, 35);
-		Alert["ab29"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-		Alert["ab29"]["Text"] = [[Okay!]];
-		Alert["ab29"]["Name"] = [[ActionBtn]];
-		Alert["ab29"]["Position"] = UDim2.new(0, 10, 1.008, -10);
-		Alert["ab29"]["Visible"] = false
-		Alert["ab29"]["ZIndex"] = 10
-
-		-- StarterGui.SkyUI.Alert.ActionBtn.UICorner
-		Alert["c30"] = Instance.new("UICorner", Alert["ab29"]);
-		Alert["c30"]["CornerRadius"] = UDim.new(0, 5);
-
-		-- StarterGui.SkyUI.Alert.ActionBtn.UIStroke
-		Alert["st31"] = Instance.new("UIStroke", Alert["ab29"]);
-		Alert["st31"]["Transparency"] = 0.96;
-		Alert["st31"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
-		Alert["st31"]["Color"] = Color3.fromRGB(255, 255, 255);
-
-		-- StarterGui.SkyUI.Alert.AlertHeader
-		Alert["ah32"] = Instance.new("Frame", Alert["f25"]);
-		Alert["ah32"]["BorderSizePixel"] = 0;
-		Alert["ah32"]["BackgroundColor3"] = Color3.fromRGB(25, 25, 25);
-		Alert["ah32"]["Size"] = UDim2.new(1, 0, -0.06107, 40);
-		Alert["ah32"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-		Alert["ah32"]["Name"] = [[AlertHeader]];
-
-		-- StarterGui.SkyUI.Alert.AlertHeader.Line
-		Alert["l33"] = Instance.new("Frame", Alert["ah32"]);
-		Alert["l33"]["ZIndex"] = 2;
-		Alert["l33"]["BorderSizePixel"] = 0;
-		Alert["l33"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-		Alert["l33"]["AnchorPoint"] = Vector2.new(0, 1);
-		Alert["l33"]["Size"] = UDim2.new(1, 0, 0, 1);
-		Alert["l33"]["Position"] = UDim2.new(0, 0, 1, 0);
-		Alert["l33"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-		Alert["l33"]["Name"] = [[Line]];
-		Alert["l33"]["BackgroundTransparency"] = 0.95;
-
-		-- StarterGui.SkyUI.Alert.AlertHeader.AlertTitle
-		Alert["at34"] = Instance.new("TextLabel", Alert["ah32"]);
-		Alert["at34"]["BorderSizePixel"] = 0;
-		Alert["at34"]["TextXAlignment"] = Enum.TextXAlignment.Left;
-		Alert["at34"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-		Alert["at34"]["TextSize"] = 18;
-		Alert["at34"]["FontFace"] = Font.new([[rbxassetid://11702779517]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-		Alert["at34"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-		Alert["at34"]["BackgroundTransparency"] = 1;
-		Alert["at34"]["Size"] = UDim2.new(1, 0, 1, 0);
-		Alert["at34"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-		Alert["at34"]["Text"] = Options.Title;
-		Alert["at34"]["Name"] = [[AlertTitle]];
-
-		-- StarterGui.SkyUI.Alert.AlertHeader.AlertTitle.UIPadding
-		Alert["p35"] = Instance.new("UIPadding", Alert["at34"]);
-		Alert["p35"]["PaddingLeft"] = UDim.new(0, 10);
-
-		-- StarterGui.SkyUI.Alert.AlertHeader.UICorner
-		Alert["c36"] = Instance.new("UICorner", Alert["ah32"]);
-
-		-- StarterGui.SkyUI.Alert.AlertHeader.Extension
-		Alert["e37"] = Instance.new("Frame", Alert["ah32"]);
-		Alert["e37"]["BorderSizePixel"] = 0;
-		Alert["e37"]["BackgroundColor3"] = Color3.fromRGB(25, 25, 25);
-		Alert["e37"]["AnchorPoint"] = Vector2.new(0, 1);
-		Alert["e37"]["Size"] = UDim2.new(1, 0, 0.25, 0);
-		Alert["e37"]["Position"] = UDim2.new(0, 0, 1, 0);
-		Alert["e37"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-		Alert["e37"]["Name"] = [[Extension]];
-
-		-- StarterGui.SkyUI.Alert.AlertHeader.LocalScript
-		Alert["ls38"] = Instance.new("LocalScript", Alert["ah32"]);
-
-		-- StarterGui.SkyUI.Alert.AlertHeader.CloseIcon
-		Alert["ci39"] = Instance.new("ImageLabel", Alert["ah32"]);
-		Alert["ci39"]["BorderSizePixel"] = 0;
-		Alert["ci39"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-		Alert["ci39"]["AnchorPoint"] = Vector2.new(1, 0);
-		Alert["ci39"]["Image"] = [[rbxassetid://10747384394]];
-		Alert["ci39"]["Size"] = UDim2.new(0, 20, 0, 20);
-		Alert["ci39"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-		Alert["ci39"]["BackgroundTransparency"] = 1;
-		Alert["ci39"]["Name"] = [[CloseIcon]];
-		Alert["ci39"]["Position"] = UDim2.new(1, -8, 0, 5);
-		Alert["ci39"]["ZIndex"] = 10
-
-		-- StarterGui.SkyUI.Alert.MessageText
-		Alert["mt40"] = Instance.new("TextLabel", Alert["f25"]);
-		Alert["mt40"]["TextWrapped"] = true;
-		Alert["mt40"]["BorderSizePixel"] = 0;
-		Alert["mt40"]["TextXAlignment"] = Enum.TextXAlignment.Left;
-		Alert["mt40"]["TextYAlignment"] = Enum.TextYAlignment.Top;
-		Alert["mt40"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-		Alert["mt40"]["TextSize"] = 18;
-		Alert["mt40"]["FontFace"] = Font.new([[rbxassetid://11702779517]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-		Alert["mt40"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-		Alert["mt40"]["BackgroundTransparency"] = 1;
-		Alert["mt40"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
-		Alert["mt40"]["Size"] = UDim2.new(1, -20, 0.427, 0);
-		Alert["mt40"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-		Alert["mt40"]["Text"] = Options.Message;
-		Alert["mt40"]["Name"] = [[MessageText]];
-		Alert["mt40"]["Position"] = UDim2.new(0.5, 0, 0.44877, 0);
-		
-		Alert["ib41"] = Instance.new("ImageButton", Alert["f25"]);
-		Alert["ib41"]["BorderSizePixel"] = 0;
-		Alert["ib41"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-		Alert["ib41"]["Size"] = UDim2.new(1, 0, 1, 0);
-		Alert["ib41"]["BackgroundTransparency"] = 1;
-		Alert["ib41"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-		
-		SkyUI:AnimateElement(Alert["s27"], {Scale = 1})
-		
-		function Alert:Close()
-			SkyUI:AnimateElement(Alert["s27"], {Scale = 0.8})
-			wait(0.1)
-			Alert["f25"]:Destroy()
-		end
-		
-		Alert["ci39"].InputBegan:Connect(function(Input, GPE)
-			if GPE then return end
-
-			if Input.UserInputType == Enum.UserInputType.MouseButton1 then
-				Alert.IsPressed = true
-				Alert:Close()
-			end
-		end)
-		
-		if Options.Action == false then
-			Alert["mt40"].Size = UDim2.new(1, -20, 0.71, 0)
-			Alert["mt40"].Position = UDim2.new(0.5, 0, 0.63, 0)
-			Alert["ab29"].Visible = false
+	SideBar.ClipsDescendants = true
+	MenuFrame.ClipsDescendants = true
+	
+	addConnection(remove.MouseButton1Click,function() 
+		if minimizeAnim then
+			game:GetService("TweenService"):Create(SideBar,TweenInfo.new(.6,Enum.EasingStyle.Cubic,Enum.EasingDirection.In),{Size = UDim2.new(0, 237, 0, 0)}):Play()
+			wait(.3)
+			coroutine.wrap(function()
+				GUITitle.Text = ConfigArgs.Name
+				for i = #GUITitle.Text, 0, -1 do
+					GUITitle.Text = string.sub(GUITitle.Text,0,i)
+					task.wait()
+				end
+				GUITitle.Text = "A"
+				task.wait()
+				GUITitle.Text = "Apoto"
+			end)()
+			game:GetService("TweenService"):Create(MenuFrame,TweenInfo.new(.6,Enum.EasingStyle.Cubic,Enum.EasingDirection.In),{Size = UDim2.new(0, 450, 0, 0)}):Play()
+			wait(.4)
+			game:GetService("TweenService"):Create(TopBar,TweenInfo.new(1,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut),{Size = UDim2.new(0, 140, 0, 40)}):Play()
+			game:GetService("TweenService"):Create(close,TweenInfo.new(.6,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut),{Rotation = -45}):Play()
+			game:GetService("TweenService"):Create(remove,TweenInfo.new(.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.In),{ImageTransparency = 1}):Play()
+			wait(.3)
+			game:GetService("TweenService"):Create(uiCorner44432,TweenInfo.new(.5,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut),{CornerRadius = UDim.new(0,8)}):Play()
+			minimized = true
 		else
-			Alert["ab29"].Visible = true
-			Alert["ab29"].Text = Options.Action.Name
+			uiCorner44432.CornerRadius = UDim.new(0,8)
+			remove.ImageTransparency = 1
+			TopBar.Size = UDim2.new(0,140,0,40)
+			MenuFrame.Size = UDim2.new(0,450,0,0)
+			SideBar.Size = UDim2.new(0,237,0,0)
+			GUITitle.Text = 'Apoto'
+			close.Rotation = -45
+			minimized = true
+		end
+	end)
 
-			Alert["ab29"].MouseEnter:Connect(function()
-				Alert.IsHovered = true
-
-				SkyUI:AnimateElement(Alert["ab29"], {TextTransparency = 0})
-				SkyUI:AnimateElement(Alert["st31"], {Transparency = 0.9})
-			end)
-
-			Alert["ab29"].MouseLeave:Connect(function()
-				Alert.IsHovered = false
-
-				if not Alert.IsPressed then
-					SkyUI:AnimateElement(Alert["ab29"], {TextTransparency = 0.2})
-					SkyUI:AnimateElement(Alert["st31"], {Transparency = 0.96})
+	addConnection(close.MouseButton1Click,function() 
+		if minimized then
+			game:GetService("TweenService"):Create(uiCorner44432,TweenInfo.new(.5,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut),{CornerRadius = UDim.new(0,0)}):Play()
+			game:GetService("TweenService"):Create(TopBar,TweenInfo.new(1,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut),{Size = UDim2.new(0, 687, 0, 40)}):Play()
+			game:GetService("TweenService"):Create(close,TweenInfo.new(.6,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut),{Rotation = 0}):Play()
+			game:GetService("TweenService"):Create(remove,TweenInfo.new(.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.In),{ImageTransparency = 0}):Play()
+			wait(.4)
+			coroutine.wrap(function()
+				local text = ConfigArgs.Name
+				for i = 1, #text do
+					GUITitle.Text = string.sub(text, 1, i)
+					task.wait()
 				end
+			end)()
+			game:GetService("TweenService"):Create(SideBar,TweenInfo.new(.6,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut),{Size = UDim2.new(0, 237, 0, 310)}):Play()
+			wait(.2)
+			game:GetService("TweenService"):Create(MenuFrame,TweenInfo.new(.6,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut),{Size = UDim2.new(0, 450, 0, 310)}):Play()
+			minimized = false
+		else
+			closedPos = TopBar.Position
+			closed = true
+			if not instantClose then
+				game:GetService("TweenService"):Create(TopBar,TweenInfo.new(.6,Enum.EasingStyle.Cubic,Enum.EasingDirection.In),{Position = closedPos + UDim2.new(0,0,1.1,0)}):Play()
+				window:CreateNotification({Title = "UI Hidden",Duration = 2,Description = "UI will be hidden until RightShift is pressed."})	
+			else
+				TopBar.Position = closedPos + UDim2.new(0,0,1.1,0)
+			end
+		end
+	end)
+
+	addConnection(game:GetService("UserInputService").InputBegan,function(input: InputObject, gameProcessedEvent: boolean) 
+		if input.KeyCode == Enum.KeyCode.RightShift and closed then
+			game:GetService("TweenService"):Create(TopBar,TweenInfo.new(.6,Enum.EasingStyle.Cubic,Enum.EasingDirection.Out),{Position = closedPos}):Play()
+			wait(.6)
+			closed = false
+		end
+	end)
+
+	function window:CreateTab(tabConfig)
+		local tabName = tabConfig.Name or 'Untitled_Tab'
+		local tabIcon = tabConfig.Icon or 'rbxassetid://7733800044'
+		local TabExample = Instance.new("Frame")
+		local UICorner = Instance.new("UICorner")
+		local SelectionText = Instance.new("TextLabel")
+		local InteractionButton = Instance.new("ImageButton")
+		local SelectionImage = Instance.new("ImageLabel")
+		local UICorner_2 = Instance.new("UICorner")
+
+		if not Apoto.contents.Tabs[tabName] then
+			Apoto.contents.Tabs[tabName] = { Objects = {} }
+		end
+
+		TabExample.Name = "Tab_"..tabName
+		TabExample.Parent = TabsScrollingFrame
+		TabExample.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
+		TabExample.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		TabExample.BorderSizePixel = 0
+		TabExample.Size = UDim2.new(0, 223, 0, 30)
+		
+		UICorner.CornerRadius = UDim.new(0, 3)
+		UICorner.Parent = TabExample
+
+		SelectionText.Name = "SelectionText"
+		SelectionText.Parent = TabExample
+		SelectionText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		SelectionText.BackgroundTransparency = 1.000
+		SelectionText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		SelectionText.BorderSizePixel = 0
+		SelectionText.Position = UDim2.new(0.165, 0, 0.033, 0)
+		SelectionText.Size = UDim2.new(0, 182, 0, 29)
+		SelectionText.FontFace = Font.new("rbxasset://fonts/families/Ubuntu.json", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+		SelectionText.Text = tabName
+		SelectionText.TextColor3 = Color3.fromRGB(206, 206, 206)
+		SelectionText.TextSize = 15
+		SelectionText.TextXAlignment = Enum.TextXAlignment.Left
+
+		InteractionButton.Name = "InteractionButton"
+		InteractionButton.Parent = TabExample
+		InteractionButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		InteractionButton.BackgroundTransparency = 1.000
+		InteractionButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		InteractionButton.BorderSizePixel = 0
+		InteractionButton.Size = UDim2.new(0, 218, 0, 30)
+		InteractionButton.Image = ""
+		assignClickAnimation(InteractionButton)
+
+		SelectionImage.Name = "SelectionImage"
+		SelectionImage.Parent = TabExample
+		SelectionImage.AnchorPoint = Vector2.new(0, 0.5)
+		SelectionImage.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		SelectionImage.BackgroundTransparency = 1.000
+		SelectionImage.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		SelectionImage.BorderSizePixel = 0
+		SelectionImage.Position = UDim2.new(0, 5, 0.5, 0)
+		SelectionImage.Size = UDim2.new(0, 24, 0, 24)
+		SelectionImage.Image = tabIcon
+
+		addConnection(InteractionButton.MouseButton1Click, function()
+			TabTitle.Text = tabName
+			loadTabContents(tabName)
+		end)
+
+		UICorner_2.Parent = SelectionImage
+
+		local thisTab = {
+			Name = tabName,
+			Contents = Apoto.contents.Tabs[tabName]
+		}
+
+		function thisTab:CreateLabel(text)
+			table.insert(self.Contents.Objects, {
+				ObjectType = 'Label',
+				Text = text
+			})
+			local Label = Instance.new("TextLabel")
+			Label.Name = tabName.."_Label"
+			Label.Visible = false
+			Label.Parent = TabContentsFrame
+			Label.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			Label.BackgroundTransparency = 1.000
+			Label.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			Label.BorderSizePixel = 0
+			Label.Size = UDim2.new(0, 423, 0, 22)
+			Label.FontFace = Font.new('rbxasset://fonts/families/TitilliumWeb.json', Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+			Label.Text = text
+			Label.TextColor3 = Color3.fromRGB(193, 193, 193)
+			Label.TextSize = 21
+			Label.TextWrapped = true
+			Label.TextXAlignment = Enum.TextXAlignment.Left
+		end
+		function thisTab:CreateParagraph(text)
+			table.insert(self.Contents.Objects, {
+				ObjectType = 'Paragraph',
+				Text = text
+			})
+			local Paragraph = Instance.new("TextLabel")
+			Paragraph.Visible = false
+			Paragraph.Name = tabName.."_Paragraph"
+			Paragraph.Parent = TabContentsFrame
+			Paragraph.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			Paragraph.BackgroundTransparency = 1.000
+			Paragraph.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			Paragraph.BorderSizePixel = 0
+			Paragraph.Size = UDim2.new(0, 423, 0, 22)
+			Paragraph.FontFace = Font.new('rbxasset://fonts/families/TitilliumWeb.json', Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+			Paragraph.Text = text
+			Paragraph.TextColor3 = Color3.fromRGB(193, 193, 193)
+			Paragraph.TextSize = 18
+			Paragraph.TextWrapped = true
+			Paragraph.AutomaticSize = Enum.AutomaticSize.Y
+			Paragraph.TextXAlignment = Enum.TextXAlignment.Left
+		end
+		function thisTab:CreateSlider(args)
+			local Minimum = args.Minimum
+			local Maximum = args.Maximum
+			local Text = args.Text
+			local Default = args.Default
+			local Callback = args.Callback or function() end
+			table.insert(self.Contents.Objects, {
+				ObjectType = 'Slider',
+				
+				sliderMinimum = Minimum,
+				sliderMaximum = Maximum,
+				Text = Text,
+				sliderDefault = Default,
+				sliderCallback = Callback
+			})
+			local Slider = Instance.new("Frame")
+			local UICorner = Instance.new("UICorner")
+			local SliderText = Instance.new("TextLabel")
+			local sliderBG = Instance.new("Frame")
+			local UICorner_2 = Instance.new("UICorner")
+			local SliderFrame = Instance.new("Frame")
+			local UICorner_3 = Instance.new("UICorner")
+			local CurrentValueText = Instance.new("TextLabel")
+			local ImageButton = Instance.new("ImageButton")
+			local MaximumText = Instance.new("TextLabel")
+			local MinimumText = Instance.new("TextLabel")
+
+			Slider.Name = tabName.."_Slider"
+			Slider.Parent = TabContentsFrame
+			Slider.BackgroundColor3 = Color3.fromRGB(17, 18, 22)
+			Slider.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			Slider.BorderSizePixel = 0
+			Slider.Visible = false
+			Slider.Position = UDim2.new(0, 0, 0.30107528, 0)
+			Slider.Size = UDim2.new(0, 423, 0, 69)
+
+			UICorner.CornerRadius = UDim.new(0, 6)
+			UICorner.Parent = Slider
+
+			SliderText.Name = "SliderText"
+			SliderText.Parent = Slider
+			SliderText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			SliderText.BackgroundTransparency = 1.000
+			SliderText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			SliderText.BorderSizePixel = 0
+			SliderText.Position = UDim2.new(0.0141843967, 0, 0, 0)
+			SliderText.Size = UDim2.new(0, 417, 0, 22)
+			SliderText.FontFace = Font.new('rbxasset://fonts/families/TitilliumWeb.json', Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+			SliderText.Text = Text
+			SliderText.TextColor3 = Color3.fromRGB(193, 193, 193)
+			SliderText.TextSize = 21
+			SliderText.TextWrapped = true
+			SliderText.TextXAlignment = Enum.TextXAlignment.Left
+
+			sliderBG.Name = "sliderBG"
+			sliderBG.Parent = Slider
+			sliderBG.BackgroundColor3 = Color3.fromRGB(11, 11, 11)
+			sliderBG.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			sliderBG.BorderSizePixel = 0
+			sliderBG.Position = UDim2.new(0.0141843967, 0, 0.536231875, 0)
+			sliderBG.Size = UDim2.new(0, 410, 0, 24)
+
+			UICorner_2.Parent = sliderBG
+
+			SliderFrame.Name = "SliderFrame"
+			SliderFrame.Parent = sliderBG
+			SliderFrame.AnchorPoint = Vector2.new(0, 0.5)
+			SliderFrame.BackgroundColor3 = setHueAndSaturation(ConfigArgs.AccentColor3,.5,.8)
+			SliderFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			SliderFrame.BorderSizePixel = 0
+			SliderFrame.Position = UDim2.new(0, 0, 0.5, 0)
+			SliderFrame.Size = UDim2.new((Default - Minimum) / (Maximum - Minimum),0,1,0)
+
+			UICorner_3.Parent = SliderFrame
+
+			CurrentValueText.Name = "CurrentValueText"
+			CurrentValueText.Parent = SliderFrame
+			CurrentValueText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			CurrentValueText.BackgroundTransparency = 1.000
+			CurrentValueText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			CurrentValueText.BorderSizePixel = 0
+			CurrentValueText.Position = UDim2.new(0.0336964689, 0, 0, 0)
+			CurrentValueText.Size = UDim2.new(0, 163, 0, 23)
+			CurrentValueText.FontFace = Font.new('rbxasset://fonts/families/TitilliumWeb.json', Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+			CurrentValueText.Text = Default
+			CurrentValueText.TextColor3 = Color3.fromRGB(206, 206, 206)
+			CurrentValueText.TextSize = 17.000
+			CurrentValueText.TextXAlignment = Enum.TextXAlignment.Left
+			CurrentValueText.TextYAlignment = Enum.TextYAlignment.Bottom
+
+			ImageButton.Parent = sliderBG
+			ImageButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			ImageButton.BackgroundTransparency = 1.000
+			ImageButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			ImageButton.BorderSizePixel = 0
+			ImageButton.Size = UDim2.new(0, 410, 0, 24)
+
+			MaximumText.Name = "MaximumText"
+			MaximumText.Parent = Slider
+			MaximumText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			MaximumText.BackgroundTransparency = 1.000
+			MaximumText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			MaximumText.BorderSizePixel = 0
+			MaximumText.Position = UDim2.new(0.49881798, 0, 0.347826093, 0)
+			MaximumText.Size = UDim2.new(0, 205, 0, 7)
+			MaximumText.FontFace = Font.new('rbxasset://fonts/families/TitilliumWeb.json', Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+			MaximumText.Text = Maximum
+			MaximumText.TextColor3 = Color3.fromRGB(150, 150, 150)
+			MaximumText.TextSize = 17.000
+			MaximumText.TextXAlignment = Enum.TextXAlignment.Right
+
+			MinimumText.Name = "MinimumText"
+			MinimumText.Parent = Slider
+			MinimumText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			MinimumText.BackgroundTransparency = 1.000
+			MinimumText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			MinimumText.BorderSizePixel = 0
+			MinimumText.Position = UDim2.new(0.0141843967, 0, 0.347826093, 0)
+			MinimumText.Size = UDim2.new(0, 156, 0, 7)
+			MinimumText.FontFace = Font.new('rbxasset://fonts/families/TitilliumWeb.json', Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+			MinimumText.Text = Minimum
+			MinimumText.TextColor3 = Color3.fromRGB(150, 150, 150)
+			MinimumText.TextSize = 17
+			MinimumText.TextXAlignment = Enum.TextXAlignment.Left
+
+			local isDragging = false
+			local posOnSlider
+			local sliderPercentage
+			local x = game:GetService("Players").LocalPlayer:GetMouse()
+
+			ImageButton.MouseButton1Down:Connect(function()
+				isDragging = true
 			end)
 
-			Alert["ab29"].InputBegan:Connect(function(Input, GPE)
-				if GPE then return end
-
-				if Input.UserInputType == Enum.UserInputType.MouseButton1 and Alert.IsHovered then
-					Alert.IsPressed = true
-					SkyUI:AnimateElement(Alert["ab29"], {BackgroundColor3 = Color3.fromRGB(32, 32, 32)})
-					SkyUI:AnimateElement(Alert["st31"], {Transparency = 0.85})
-					Options.Action.Function()
-				end
+			ImageButton.MouseButton1Up:Connect(function()
+				isDragging = false
+				SliderFrame.Size = UDim2.new(sliderPercentage, 0, 1, 0)
 			end)
 
-			Alert["ab29"].InputEnded:Connect(function(Input, GPE)
-				if GPE then return end
+			addConnection(game:GetService("RunService").RenderStepped, function(deltaTime: number)
+				if isDragging == true then
+					posOnSlider = (x.X - sliderBG.AbsolutePosition.X) / sliderBG.AbsoluteSize.X
+					sliderPercentage = math.clamp(posOnSlider, 0, 1)
+					SliderFrame.Size = SliderFrame.Size:Lerp(UDim2.new(sliderPercentage, 0, 1, 0), .3)
 
-				if Input.UserInputType == Enum.UserInputType.MouseButton1 then
-					Alert.IsPressed = false
+					local minValue = Minimum
+					local maxValue = Maximum
+					local range = maxValue - minValue
+					local sliderValue = math.floor((sliderPercentage * range) + minValue)
 
-					if Alert.IsHovered then
-						SkyUI:AnimateElement(Alert["ab29"], {TextTransparency = 0})
-						SkyUI:AnimateElement(Alert["st31"], {Transparency = 0.9})
-					else
-						SkyUI:AnimateElement(Alert["ab29"], {BackgroundColor3 = Color3.fromRGB(29, 29, 29)})
-						SkyUI:AnimateElement(Alert["ab29"], {TextTransparency = 0.2})
-						SkyUI:AnimateElement(Alert["st31"], {Transparency = 0.96})
+					CurrentValueText.Text = sliderValue
+					Callback(sliderValue)
+				end					
+			end)
+			local slider = {}
+			function slider:Set(value)
+				sliderPercentage = (value - Minimum) / (Maximum - Minimum)
+				local tween = game:GetService("TweenService"):Create(SliderFrame,TweenInfo.new(.6,Enum.EasingStyle.Cubic,Enum.EasingDirection.Out),{Size = UDim2.new(sliderPercentage,0,1,0)})
+				tween:Play()
+				Callback(value)
+				CurrentValueText.Text = value
+			end
+			return slider
+		end
+		function thisTab:CreateButton(args)
+			args.Text = args.Text or "Button"
+			args.Callback = args.Callback or function() end
+			local Button = Instance.new("Frame")
+			local UICorner = Instance.new("UICorner")
+			local SliderText = Instance.new("TextLabel")
+			local ImageButton = Instance.new("ImageButton")
+			local tapIcon = Instance.new("ImageButton")
+
+			Button.Name =  tabName.."_Button"
+			Button.Parent = TabContentsFrame
+			Button.BackgroundColor3 = Color3.fromRGB(17, 18, 22)
+			Button.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			Button.BorderSizePixel = 0
+			Button.Visible = false
+			Button.Position = UDim2.new(0, 0, 0.562723994, 0)
+			Button.Size = UDim2.new(0, 423, 0, 45)
+
+			UICorner.CornerRadius = UDim.new(0, 6)
+			UICorner.Parent = Button
+
+			SliderText.Name = "SliderText"
+			SliderText.Parent = Button
+			SliderText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			SliderText.BackgroundTransparency = 1.000
+			SliderText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			SliderText.BorderSizePixel = 0
+			SliderText.Position = UDim2.new(0.0283687934, 0, 0, 0)
+			SliderText.Size = UDim2.new(0, 366, 0, 45)
+			SliderText.FontFace = Font.new('rbxasset://fonts/families/TitilliumWeb.json', Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+			SliderText.Text = args.Text
+			SliderText.TextColor3 = Color3.fromRGB(193, 193, 193)
+			SliderText.TextSize = 21.000
+			SliderText.TextWrapped = true
+			SliderText.TextXAlignment = Enum.TextXAlignment.Left
+
+			ImageButton.Parent = Button
+			ImageButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			ImageButton.BackgroundTransparency = 1.000
+			ImageButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			ImageButton.BorderSizePixel = 0
+			ImageButton.Size = UDim2.new(0, 423, 0, 45)
+			ImageButton.Visible = true
+
+			tapIcon.Name = "tapIcon"
+			tapIcon.Parent = Button
+			tapIcon.AnchorPoint = Vector2.new(0.5, 0.5)
+			tapIcon.BackgroundTransparency = 1.000
+			tapIcon.LayoutOrder = 11
+			tapIcon.Position = UDim2.new(0.949999988, 0, 0.5, 0)
+			tapIcon.Size = UDim2.new(0, 25, 0, 25)
+			tapIcon.ZIndex = 2
+			tapIcon.Image = "rbxassetid://3926305904"
+			tapIcon.ImageRectOffset = Vector2.new(164, 844)
+			tapIcon.ImageRectSize = Vector2.new(36, 36)
+			assignClickAnimation(ImageButton)
+			addConnection(ImageButton.MouseButton1Click,function() 
+				args.Callback()
+			end)
+		end
+		function thisTab:CreateToggle(args)
+			args.Callback = args.Callback or function() end
+			args.Default = args.Default or false
+			args.Text = args.Text or "Toggle"
+			local Checkbox = Instance.new("Frame")
+			local UICorner = Instance.new("UICorner")
+			local SliderText = Instance.new("TextLabel")
+			local ImageButton = Instance.new("ImageButton")
+			local tapIcon = Instance.new("ImageLabel")
+			local UICorner_2 = Instance.new("UICorner")
+			local UIStroke = Instance.new("UIStroke")
+
+			Checkbox.Name = tabName.."_Checkbox"
+			Checkbox.Parent = TabContentsFrame
+			Checkbox.BackgroundColor3 = Color3.fromRGB(17, 18, 22)
+			Checkbox.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			Checkbox.BorderSizePixel = 0
+			Checkbox.Position = UDim2.new(0, 0, 0.562723994, 0)
+			Checkbox.Size = UDim2.new(0, 423, 0, 45)
+			Checkbox.Visible = false
+
+			UICorner.CornerRadius = UDim.new(0, 6)
+			UICorner.Parent = Checkbox
+
+			SliderText.Name = "SliderText"
+			SliderText.Parent = Checkbox
+			SliderText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			SliderText.BackgroundTransparency = 1.000
+			SliderText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			SliderText.BorderSizePixel = 0
+			SliderText.Position = UDim2.new(0.0283687934, 0, 0, 0)
+			SliderText.Size = UDim2.new(0, 366, 0, 45)
+			SliderText.FontFace = Font.new('rbxasset://fonts/families/TitilliumWeb.json', Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+			SliderText.Text = args.Text
+			SliderText.TextColor3 = Color3.fromRGB(193, 193, 193)
+			SliderText.TextSize = 21.000
+			SliderText.TextWrapped = true
+			SliderText.TextXAlignment = Enum.TextXAlignment.Left
+
+			ImageButton.Parent = Checkbox
+			ImageButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			ImageButton.BackgroundTransparency = 1.000
+			ImageButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			ImageButton.BorderSizePixel = 0
+			ImageButton.Size = UDim2.new(0, 423, 0, 45)
+			ImageButton.Visible = true
+			ImageButton.ZIndex = 2
+
+			tapIcon.Name = "tapIcon"
+			tapIcon.Parent = Checkbox
+			tapIcon.AnchorPoint = Vector2.new(0.5, 0.5)
+			tapIcon.BackgroundColor3 = setHueAndSaturation(ConfigArgs.AccentColor3,.5,.8) 
+			tapIcon.BackgroundTransparency = 1.000
+			tapIcon.BorderSizePixel = 0
+			tapIcon.LayoutOrder = 11
+			tapIcon.Position = UDim2.new(0.949999988, 0, 0.5, 0)
+			tapIcon.Size = UDim2.new(0, 15, 0, 15)
+			tapIcon.ZIndex = 1
+			tapIcon.ImageRectOffset = Vector2.new(164, 844)
+			tapIcon.ImageRectSize = Vector2.new(36, 36)
+
+			UICorner_2.CornerRadius = UDim.new(0, 16)
+			UICorner_2.Parent = tapIcon
+
+			UIStroke.Parent = tapIcon
+			UIStroke.Thickness = 2.8
+			UIStroke.Color = setHueAndSaturation(ConfigArgs.AccentColor3,.5,.8) 
+			tapIcon.Size = UDim2.new(0,15,0,15)
+
+			if args.Default == true then
+				UIStroke.Thickness = 0
+				UIStroke.Enabled = true
+				tapIcon.Size = UDim2.new(0,20,0,20)
+			end
+
+			local enabled = args.Default
+			assignClickAnimation(ImageButton)
+			addConnection(ImageButton.MouseButton1Click,function() 
+				enabled = not enabled
+				args.Callback(enabled)
+				if enabled == true then
+					for i=0,1,.1 do
+						UIStroke.Thickness = 2.8 - (2.8 * i)
+						tapIcon.BackgroundTransparency = 1 - i
+						task.wait()
 					end
+				else
+					for i=0,1,.1 do
+						UIStroke.Thickness = (2.8 * i)
+						tapIcon.BackgroundTransparency = i
+						task.wait()
+					end
+				end
+			end)
+			local toggle = {}
+			function toggle:Set(Enabled: BoolValue)
+				args.Callback(Enabled)
+				if Enabled == true then
+					for i=0,1,.1 do
+						UIStroke.Thickness = 2.8 - (2.8 * i)
+						tapIcon.BackgroundTransparency = 1 - i
+						task.wait()
+					end
+				else
+					for i=0,1,.1 do
+						UIStroke.Thickness = (2.8 * i)
+						tapIcon.BackgroundTransparency = i
+						task.wait()
+					end
+				end
+			end
+			return toggle
+
+		end
+		function thisTab:CreatePlayerSelector(args)
+			args.Text = args.Text or "Player Selector"
+			args.Callback = args.Callback or function() end
+
+			local PlayerSelector = Instance.new("Frame")
+			local UICorner = Instance.new("UICorner")
+			local SliderText = Instance.new("TextLabel")
+			local ImageButton = Instance.new("ImageButton")
+			local selectionFrame = Instance.new("Frame")
+			local UICorner_2 = Instance.new("UICorner")
+			local ImageLabel = Instance.new("ImageLabel")
+			local UICorner_3 = Instance.new("UICorner")
+			local TextLabel = Instance.new("TextLabel")
+
+			PlayerSelector.Name = tabName.."_PlayerSelector"
+			PlayerSelector.Parent = TabContentsFrame
+			PlayerSelector.BackgroundColor3 = Color3.fromRGB(17, 18, 22)
+			PlayerSelector.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			PlayerSelector.BorderSizePixel = 0
+			PlayerSelector.Position = UDim2.new(0, 0, 0.351254493, 0)
+			PlayerSelector.Size = UDim2.new(0, 423, 0, 63)
+			PlayerSelector.Visible = false
+
+			UICorner.CornerRadius = UDim.new(0, 6)
+			UICorner.Parent = PlayerSelector
+
+			SliderText.Name = "SliderText"
+			SliderText.Parent = PlayerSelector
+			SliderText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			SliderText.BackgroundTransparency = 1.000
+			SliderText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			SliderText.BorderSizePixel = 0
+			SliderText.Position = UDim2.new(0.0283687934, 0, 0, 0)
+			SliderText.Size = UDim2.new(0, 218, 0, 63)
+			SliderText.FontFace = defaultFont
+			SliderText.Text = "Player Selector"
+			SliderText.TextColor3 = Color3.fromRGB(193, 193, 193)
+			SliderText.TextSize = 21.000
+			SliderText.TextWrapped = true
+			SliderText.TextXAlignment = Enum.TextXAlignment.Left
+
+			ImageButton.Parent = PlayerSelector
+			ImageButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			ImageButton.BackgroundTransparency = 1.000
+			ImageButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			ImageButton.BorderSizePixel = 0
+			ImageButton.Size = UDim2.new(1,0,1,0)
+			assignClickAnimation(ImageButton)
+
+			selectionFrame.Name = "selectionFrame"
+			selectionFrame.Parent = PlayerSelector
+			selectionFrame.BackgroundColor3 = Color3.fromRGB(28, 29, 35)
+			selectionFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			selectionFrame.BorderSizePixel = 0
+			selectionFrame.ZIndex = 0
+			selectionFrame.Position = UDim2.new(0.543735206, 0, 0.095238097, 0)
+			selectionFrame.Size = UDim2.new(0, 185, 0, 51)
+
+			UICorner_2.Parent = selectionFrame
+
+			ImageLabel.Parent = selectionFrame
+			ImageLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			ImageLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			ImageLabel.BorderSizePixel = 0
+			ImageLabel.Position = UDim2.new(0.0324324332, 0, 0.0588235296, 0)
+			ImageLabel.BackgroundTransparency = 1
+			ImageLabel.Size = UDim2.new(0, 45, 0, 45)
+			ImageLabel.Image = "http://www.roblox.com/asset/?id=10885644041"
+
+			UICorner_3.Parent = ImageLabel
+
+			TextLabel.Parent = selectionFrame
+			TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			TextLabel.BackgroundTransparency = 1.000
+			TextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			TextLabel.BorderSizePixel = 0
+			TextLabel.Position = UDim2.new(0.313513517, 0, 0.0588235296, 0)
+			TextLabel.Size = UDim2.new(0, 126, 0, 45)
+			TextLabel.FontFace = defaultFont
+			TextLabel.Text = "Select player.."
+			TextLabel.TextColor3 = Color3.fromRGB(252, 252, 252)
+			TextLabel.TextSize = 20.000
+			TextLabel.TextWrapped = true
+			TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+			local function popupMenu()	
+				local playerIcons = getPlayersAndIcons()
+				local PlayerDropdownMenu = Instance.new("Frame")
+				local ScrollingFrame = Instance.new("ScrollingFrame")
+				local UIPadding = Instance.new("UIPadding")
+				local UIListLayout = Instance.new("UIListLayout")
+				local TitleText = Instance.new("TextLabel")
+
+				PlayerDropdownMenu.Name = "PlayerDropdownMenu"
+				PlayerDropdownMenu.Parent = SideBar
+				PlayerDropdownMenu.BackgroundColor3 = Color3.fromRGB(9, 10, 12)
+				PlayerDropdownMenu.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				PlayerDropdownMenu.BorderSizePixel = 0
+				PlayerDropdownMenu.Position = UDim2.new(-1.1, 0, -0.0032258064, 0)
+				PlayerDropdownMenu.Size = UDim2.new(0, 237, 0, 271)
+
+				ScrollingFrame.Parent = PlayerDropdownMenu
+				ScrollingFrame.Active = true
+				ScrollingFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				ScrollingFrame.BackgroundTransparency = 1.000
+				ScrollingFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				ScrollingFrame.BorderSizePixel = 0
+				ScrollingFrame.Position = UDim2.new(0, 0, 0.110701106, 0)
+				ScrollingFrame.Size = UDim2.new(0, 236, 0, 213)
+				ScrollingFrame.ScrollBarThickness = 4
+
+				TitleText.Name = "TitleText"
+				TitleText.Parent = PlayerDropdownMenu
+				TitleText.AnchorPoint = Vector2.new(0, 0.5)
+				TitleText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				TitleText.BackgroundTransparency = 1.000
+				TitleText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				TitleText.BorderSizePixel = 0
+				TitleText.Position = UDim2.new(0.0421940945, 0, 0.0585791096, 0)
+				TitleText.Size = UDim2.new(0, 226, 0, 28)
+				TitleText.FontFace = defaultFont
+				TitleText.Text = args.Text
+				TitleText.TextColor3 = Color3.fromRGB(255, 255, 255)
+				TitleText.TextSize = 20.000
+				TitleText.TextXAlignment = Enum.TextXAlignment.Left
+
+				UIPadding.Parent = ScrollingFrame
+				UIPadding.PaddingLeft = UDim.new(0, 10)
+				UIPadding.PaddingRight = UDim.new(0, 10)
+
+				UIListLayout.Parent = ScrollingFrame
+				UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+				UIListLayout.Padding = UDim.new(0, 7)
+
+				SideBar.ClipsDescendants = true
+				local introTween = game:GetService("TweenService"):Create(PlayerDropdownMenu,TweenInfo.new(0.1,Enum.EasingStyle.Cubic,Enum.EasingDirection.Out),{Position = UDim2.new(0, 0, 0, 0)})
+                 introTween:Play()
+
+				local isPlayerSelected = false
+				for i,v in pairs(playerIcons) do
+					local Name = v.Name
+					local Icon = v.Icon
+
+					local PlayerFrame = Instance.new("Frame")
+					local UICorner = Instance.new("UICorner")
+					local PlayerImage = Instance.new("ImageLabel")
+					local UICorner_2 = Instance.new("UICorner")
+					local PlayerNameLabel = Instance.new("TextLabel")
+					local SelectionBox = Instance.new("ImageButton")
+
+					PlayerFrame.Name = "PlayerFrame"
+					PlayerFrame.Parent = ScrollingFrame
+					PlayerFrame.BackgroundColor3 = Color3.fromRGB(17, 17, 17)
+					PlayerFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+					PlayerFrame.BorderSizePixel = 0
+					PlayerFrame.Size = UDim2.new(1, 0, 0, 40)
+
+					UICorner.Parent = PlayerFrame
+
+					PlayerImage.Name = "PlayerImage"
+					PlayerImage.Parent = PlayerFrame
+					PlayerImage.AnchorPoint = Vector2.new(0.5, 0.5)
+					PlayerImage.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+					PlayerImage.BackgroundTransparency = 1.000
+					PlayerImage.BorderColor3 = Color3.fromRGB(0, 0, 0)
+					PlayerImage.BorderSizePixel = 0
+					PlayerImage.Position = UDim2.new(0.115000002, 0, 0.5, 0)
+					PlayerImage.Size = UDim2.new(0, 40, 0, 40)
+					PlayerImage.Image = Icon
+
+					UICorner_2.Parent = PlayerImage
+
+					PlayerNameLabel.Name = "PlayerNameLabel"
+					PlayerNameLabel.Parent = PlayerFrame
+					PlayerNameLabel.AnchorPoint = Vector2.new(0, 0.5)
+					PlayerNameLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+					PlayerNameLabel.BackgroundTransparency = 1.000
+					PlayerNameLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+					PlayerNameLabel.BorderSizePixel = 0
+					PlayerNameLabel.Position = UDim2.new(0.230999976, 0, 0.500000238, 0)
+					PlayerNameLabel.Size = UDim2.new(0, 166, 0, 40)
+					PlayerNameLabel.FontFace = defaultFont
+					PlayerNameLabel.Text = Name
+					PlayerNameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+					PlayerNameLabel.TextSize = 20.000
+					PlayerNameLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+					SelectionBox.Name = "SelectionBox"
+					SelectionBox.Parent = PlayerFrame
+					SelectionBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+					SelectionBox.BackgroundTransparency = 1.000
+					SelectionBox.BorderColor3 = Color3.fromRGB(0, 0, 0)
+					SelectionBox.BorderSizePixel = 0
+					SelectionBox.Size = UDim2.new(1, 0, 1, 0)
+					assignClickAnimation(SelectionBox)
+					addConnection(SelectionBox.MouseButton1Click,function()
+						if isPlayerSelected == false then
+							isPlayerSelected = true
+							local outroTween = game:GetService("TweenService"):Create(PlayerDropdownMenu,TweenInfo.new(.5,Enum.EasingStyle.Cubic,Enum.EasingDirection.In),{Position = UDim2.new(-1.1, 0, -0.0032258064, 0)})
+							outroTween:Play()
+							TextLabel.Text = Name
+							ImageLabel.Image = Icon
+							args.Callback(game:GetService("Players"):FindFirstChild(Name))
+							outroTween.Completed:Wait()
+							PlayerDropdownMenu:Destroy()
+						end
+					end)
+				end
+			
+				local totalHeight = (#playerIcons * 47) + ((#playerIcons - 1) * 7)
+				ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, totalHeight)
+
+			end
+			addConnection(ImageButton.MouseButton1Click,function()
+				popupMenu()
+			end)
+		end
+		function thisTab:CreateDropdown(args)
+			args.Text = args.Text or "Dropdown"
+			args.Options = args.Options or {"Option 1", "Option 2", "Option 3"}
+			args.Default = args.Default or "Option 1"	args.Callback = args.Callback or function() end
+
+	local Dropdown = Instance.new("Frame")
+	local UICorner = Instance.new("UICorner")
+	local SliderText = Instance.new("TextLabel")
+	local ImageButton = Instance.new("ImageButton")
+	local selectionFrame = Instance.new("Frame")
+	local UICorner_2 = Instance.new("UICorner")
+	local TextLabel = Instance.new("TextLabel")
+
+	Dropdown.Name = tabName.."_Dropdown"
+	Dropdown.Parent = TabContentsFrame
+	Dropdown.BackgroundColor3 = Color3.fromRGB(17, 18, 22)
+	Dropdown.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Dropdown.BorderSizePixel = 0
+	Dropdown.Position = UDim2.new(0, 0, 0.591397822, 0)
+	Dropdown.Size = UDim2.new(0, 423, 0, 42)
+	Dropdown.Visible = false
+
+	UICorner.CornerRadius = UDim.new(0, 6)
+	UICorner.Parent = Dropdown
+
+	SliderText.Name = "SliderText"
+	SliderText.Parent = Dropdown
+	SliderText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	SliderText.BackgroundTransparency = 1.000
+	SliderText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	SliderText.BorderSizePixel = 0
+	SliderText.Position = UDim2.new(0.0283687934, 0, 0, 0)
+	SliderText.Size = UDim2.new(0.482269496, 0, 1, 0)
+	SliderText.FontFace = defaultFont
+	SliderText.Text = args.Text
+	SliderText.TextColor3 = Color3.fromRGB(193, 193, 193)
+	SliderText.TextSize = 21.000
+	SliderText.TextWrapped = true
+	SliderText.TextXAlignment = Enum.TextXAlignment.Left
+
+	ImageButton.Parent = Dropdown
+	ImageButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	ImageButton.BackgroundTransparency = 1.000
+	ImageButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	ImageButton.BorderSizePixel = 0
+	ImageButton.Size = UDim2.new(1, 0, 1, 0)
+
+	selectionFrame.Name = "selectionFrame"
+	selectionFrame.Parent = Dropdown
+	selectionFrame.BackgroundColor3 = Color3.fromRGB(28, 29, 35)
+	selectionFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	selectionFrame.BorderSizePixel = 0
+	selectionFrame.Position = UDim2.new(0.543735206, 0, 0.095238097, 0)
+	selectionFrame.Size = UDim2.new(-0.0330969281, 200, 0.809523821, 0)
+	selectionFrame.ZIndex = 0
+
+	UICorner_2.Parent = selectionFrame
+
+	TextLabel.Parent = selectionFrame
+	TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	TextLabel.BackgroundTransparency = 1.000
+	TextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	TextLabel.BorderSizePixel = 0
+	TextLabel.Position = UDim2.new(-0.00537634408, 0, 0, 0)
+	TextLabel.Size = UDim2.new(1, 0, 1, 0)
+	TextLabel.FontFace = defaultFont
+	TextLabel.Text = args.Default
+	TextLabel.TextColor3 = Color3.fromRGB(252, 252, 252)
+	TextLabel.TextSize = 20.000
+	TextLabel.TextWrapped = true
+
+	assignClickAnimation(ImageButton)
+
+	local function popupMenu()
+		local PlayerDropdownMenu = Instance.new("Frame")
+		local ScrollingFrame = Instance.new("ScrollingFrame")
+		local UIPadding = Instance.new("UIPadding")
+		local UIListLayout = Instance.new("UIListLayout")
+		local TitleText = Instance.new("TextLabel")
+
+		PlayerDropdownMenu.Name = "PlayerDropdownMenu"
+		PlayerDropdownMenu.Parent = SideBar
+		PlayerDropdownMenu.BackgroundColor3 = Color3.fromRGB(9, 10, 12)
+		PlayerDropdownMenu.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		PlayerDropdownMenu.BorderSizePixel = 0
+		PlayerDropdownMenu.Position = UDim2.new(-1.1, 0, -0.0032258064, 0)
+		PlayerDropdownMenu.Size = UDim2.new(0, 237, 0, 271)
+
+		ScrollingFrame.Parent = PlayerDropdownMenu
+		ScrollingFrame.Active = true
+		ScrollingFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		ScrollingFrame.BackgroundTransparency = 1.000
+		ScrollingFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		ScrollingFrame.BorderSizePixel = 0
+		ScrollingFrame.Position = UDim2.new(0, 0, 0.110701106, 0)
+		ScrollingFrame.Size = UDim2.new(0, 236, 0, 213)
+		ScrollingFrame.ScrollBarThickness = 4
+
+		TitleText.Name = "TitleText"
+		TitleText.Parent = PlayerDropdownMenu
+		TitleText.AnchorPoint = Vector2.new(0, 0.5)
+		TitleText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		TitleText.BackgroundTransparency = 1.000
+		TitleText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		TitleText.BorderSizePixel = 0
+		TitleText.Position = UDim2.new(0.0421940945, 0, 0.0585791096, 0)
+		TitleText.Size = UDim2.new(0, 226, 0, 28)
+		TitleText.FontFace = defaultFont
+		TitleText.Text = args.Text
+		TitleText.TextColor3 = Color3.fromRGB(255, 255, 255)
+		TitleText.TextSize = 20.000
+		TitleText.TextXAlignment = Enum.TextXAlignment.Left
+
+		UIPadding.Parent = ScrollingFrame
+		UIPadding.PaddingLeft = UDim.new(0, 10)
+		UIPadding.PaddingRight = UDim.new(0, 10)
+
+		UIListLayout.Parent = ScrollingFrame
+		UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+		UIListLayout.Padding = UDim.new(0, 7)
+
+		SideBar.ClipsDescendants = true
+		local introTween = game:GetService("TweenService"):Create(PlayerDropdownMenu, TweenInfo.new(.4, Enum.EasingStyle.Cubic, Enum.EasingDirection.Out), {Position = UDim2.new(0, 0, -0.0032258064, 0)})
+		introTween:Play()
+
+		local isItemSelected = false
+		for i, v in ipairs(args.Options) do
+			local Selection = Instance.new("Frame")
+			local UICorner = Instance.new("UICorner")
+			local Label1 = Instance.new("TextLabel")
+			local SelectionBox = Instance.new("ImageButton")
+
+			Selection.Name = "Selection"
+			Selection.Parent = ScrollingFrame
+			Selection.BackgroundColor3 = Color3.fromRGB(17, 17, 17)
+			Selection.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			Selection.BorderSizePixel = 0
+			Selection.Position = UDim2.new(0, 0, 0.371950239, 0)
+			Selection.Size = UDim2.new(1, 0, 0, 40)
+
+			UICorner.Parent = Selection
+
+			Label1.Name = "Label1"
+			Label1.Parent = Selection
+			Label1.AnchorPoint = Vector2.new(0, 0.5)
+			Label1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			Label1.BackgroundTransparency = 1.000
+			Label1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			Label1.BorderSizePixel = 0
+			Label1.Position = UDim2.new(0.0455553979, 0, 0.5, 0)
+			Label1.Size = UDim2.new(0.953963101, 0, 1, 0)
+			Label1.FontFace = defaultFont
+			Label1.Text = v
+			Label1.TextColor3 = Color3.fromRGB(255, 255, 255)
+			Label1.TextSize = 20.000
+			Label1.TextXAlignment = Enum.TextXAlignment.Left
+
+			SelectionBox.Name = "SelectionBox"
+			SelectionBox.Parent = Selection
+			SelectionBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			SelectionBox.BackgroundTransparency = 1.000
+			SelectionBox.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			SelectionBox.BorderSizePixel = 0
+			SelectionBox.Size = UDim2.new(1, 0, 1, 0)
+
+			assignClickAnimation(SelectionBox)
+			addConnection(SelectionBox.MouseButton1Click, function()
+				if not isItemSelected then
+					isItemSelected = true
+					local outroTween = game:GetService("TweenService"):Create(PlayerDropdownMenu, TweenInfo.new(.5, Enum.EasingStyle.Cubic, Enum.EasingDirection.In), {Position = UDim2.new(-1.1, 0, -0.0032258064, 0)})
+					outroTween:Play()
+					args.Callback(v)
+					TextLabel.Text = v
+					outroTween.Completed:Wait()
+					PlayerDropdownMenu:Destroy()
 				end
 			end)
 		end
 		
-		return Alert
+		-- FIX: Update CanvasSize to allow scrolling to all options
+		local totalHeight = (#args.Options * 47) + ((#args.Options - 1) * 7)
+		ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, totalHeight)
 	end
 
-	function Interface:AddSection(Options)
-		Options = SkyUI:CheckOptions({
-			Name = "Section",
-			Image = "rbxassetid://10723407389"
-		}, Options)
+	addConnection(ImageButton.MouseButton1Click, function()
+		popupMenu()
+	end)
+end
+function thisTab:CreateColorPicker(args)
+	args.Text = args.Text or "Color Picker"
+	args.Default = args.Default or Color3.new(1, 1, 1)
+	args.Callback = args.Callback or function() end
 
-		local Section = {
-			IsHovered = false,
-			IsActive = false
-		} 
-		
-		-- StarterGui.SkyUI.MainFrame.Sidebar.Items.InactiveSection
-		Section["is42"] = Instance.new("TextLabel", Interface["it20"])
-		Section["is42"].BorderSizePixel = 0
-		Section["is42"].TextXAlignment = Enum.TextXAlignment.Left
-		Section["is42"].BackgroundColor3 = Color3.fromRGB(28, 28, 28)
-		Section["is42"].TextSize = 16
-		Section["is42"].FontFace = Font.new([[rbxassetid://11702779517]], Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-		Section["is42"].TextColor3 = Color3.fromRGB(255, 255, 255)
-		Section["is42"].BackgroundTransparency = 1
-		Section["is42"].Size = UDim2.new(1, 0, 0, 35)
-		Section["is42"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-		Section["is42"].Text = Options.Name
-		Section["is42"].TextTransparency = 0.4
-		Section["is42"].Name = [[InactiveSection]]
+	local Dropdown = Instance.new("Frame")
+	local UICorner = Instance.new("UICorner")
+	local SliderText = Instance.new("TextLabel")
+	local ImageButton = Instance.new("ImageButton")
+	local selectionFrame = Instance.new("Frame")
+	local UICorner_2 = Instance.new("UICorner")
 
-		-- StarterGui.SkyUI.MainFrame.Sidebar.Items.InactiveSection.UIPadding
-		Section["p43"] = Instance.new("UIPadding", Section["is42"])
-		Section["p43"].PaddingTop = UDim.new(0, 8)
-		Section["p43"].PaddingLeft = UDim.new(0, 35)
-		Section["p43"].PaddingBottom = UDim.new(0, 8)
+	Dropdown.Name = tabName.."ColorPicker"
+	Dropdown.Parent = TabContentsFrame
+	Dropdown.BackgroundColor3 = Color3.fromRGB(17, 18, 22)
+	Dropdown.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Dropdown.BorderSizePixel = 0
+	Dropdown.Position = UDim2.new(0, 0, 0.591397822, 0)
+	Dropdown.Size = UDim2.new(0, 423, 0, 42)
+	Dropdown.Visible = false
 
-		-- StarterGui.SkyUI.MainFrame.Sidebar.Items.InactiveSection.SectionIcon
-		Section["si44"] = Instance.new("ImageLabel", Section["is42"])
-		Section["si44"].BorderSizePixel = 0
-		Section["si44"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		Section["si44"].Image = Options.Image
-		Section["si44"].ImageTransparency = 0.4
-		Section["si44"].Size = UDim2.new(0, 18, 0, 18)
-		Section["si44"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-		Section["si44"].BackgroundTransparency = 1
-		Section["si44"].Name = [[SectionIcon]]
-		Section["si44"].Position = UDim2.new(0, -25, 0, 0)
+	UICorner.CornerRadius = UDim.new(0, 6)
+	UICorner.Parent = Dropdown
 
-		-- StarterGui.SkyUI.MainFrame.Sidebar.Items.InactiveSection.UIStroke
-		Section["st45"] = Instance.new("UIStroke", Section["is42"])
-		Section["st45"].Enabled = false
-		Section["st45"].Transparency = 0.96
-		Section["st45"].ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-		Section["st45"].Color = Color3.fromRGB(255, 255, 255)
+	SliderText.Name = "SliderText"
+	SliderText.Parent = Dropdown
+	SliderText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	SliderText.BackgroundTransparency = 1.000
+	SliderText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	SliderText.BorderSizePixel = 0
+	SliderText.Position = UDim2.new(0.0283687934, 0, 0, 0)
+	SliderText.Size = UDim2.new(0.482269496, 0, 1, 0)
+	SliderText.FontFace = defaultFont
+	SliderText.Text = args.Text
+	SliderText.TextColor3 = Color3.fromRGB(193, 193, 193)
+	SliderText.TextSize = 21.000
+	SliderText.TextWrapped = true
+	SliderText.TextXAlignment = Enum.TextXAlignment.Left
 
-		-- StarterGui.SkyUI.MainFrame.Sidebar.Items.InactiveSection.UICorner
-		Section["c46"] = Instance.new("UICorner", Section["is42"])
-		Section["c46"].CornerRadius = UDim.new(0, 5)
+	ImageButton.Parent = Dropdown
+	ImageButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	ImageButton.BackgroundTransparency = 1.000
+	ImageButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	ImageButton.BorderSizePixel = 0
+	ImageButton.Size = UDim2.new(1, 0, 1, 0)
 
-		-- StarterGui.SkyUI.MainFrame.Content.SectionContent
-		Section["sc47"] = Instance.new("ScrollingFrame", Interface["ct14"])
-		Section["sc47"].Active = true
-		Section["sc47"].BorderSizePixel = 0
-		Section["sc47"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		Section["sc47"].Name = Options.Name
-		Section["sc47"].ScrollBarImageTransparency = 0.9
-		Section["sc47"].AnchorPoint = Vector2.new(0.5, 0.5)
-		Section["sc47"].Size = UDim2.new(1, 0, 1, 0)
-		Section["sc47"].Position = UDim2.new(0.5, 0, 0.5, 0)
-		Section["sc47"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-		Section["sc47"].ScrollBarThickness = 4
-		Section["sc47"].BackgroundTransparency = 1
-		Section["sc47"].Visible = false
+	selectionFrame.Name = "selectionFrame"
+	selectionFrame.Parent = Dropdown
+	selectionFrame.BackgroundColor3 = args.Default
+	selectionFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	selectionFrame.BorderSizePixel = 0
+	selectionFrame.AnchorPoint = Vector2.new(.5,.5)
+	selectionFrame.Position = UDim2.new(0.943, 0,0.5, 0)
+	selectionFrame.Size = UDim2.new(0.08, 0,0.81, 0)
+	selectionFrame.ZIndex = 0
 
-		-- StarterGui.SkyUI.MainFrame.Content.SectionContent.UIPadding
-		Section["p48"] = Instance.new("UIPadding", Section["sc47"])
-		Section["p48"].PaddingTop = UDim.new(0, 10)
-		Section["p48"].PaddingRight = UDim.new(0, 12)
-		Section["p48"].PaddingLeft = UDim.new(0, 10)
-		Section["p48"].PaddingBottom = UDim.new(0, 10)
+	UICorner_2.Parent = selectionFrame
 
-		-- StarterGui.SkyUI.MainFrame.Content.SectionContent.UIListLayout
-		Section["l49"] = Instance.new("UIListLayout", Section["sc47"])
-		Section["l49"].Padding = UDim.new(0, 10)
-		Section["l49"].SortOrder = Enum.SortOrder.LayoutOrder
-		
-		function Section:Activate()
-			if not Section.IsActive then
-				if Interface.CurrentPage ~= nil then
-					Interface.CurrentPage:Deactivate()
-				end
+	assignClickAnimation(ImageButton)
 
-				Section.IsActive = true
-				SkyUI:AnimateElement(Section["is42"], {TextTransparency = 0})
-				SkyUI:AnimateElement(Section["si44"], {ImageTransparency = 0})
-				SkyUI:AnimateElement(Section["is42"], {BackgroundTransparency = 0})
-				SkyUI:AnimateElement(Section["st45"], {Enabled = true})
-				Section["sc47"].Visible = true
+	local function popupMenu()
+		local PlayerDropdownMenu = Instance.new("Frame")
+		local TitleText = Instance.new("TextLabel")
+		local Frame = Instance.new("Frame")
+		local UICorner = Instance.new("UICorner")
+		local Frame_2 = Instance.new("Frame")
+		local ValueButton = Instance.new("ImageButton")
+		local UIGradient = Instance.new("UIGradient")
+		local ImageLabel = Instance.new("ImageLabel")
+		local HSIButton = Instance.new("ImageButton")
+		local RGB_Box = Instance.new("TextLabel")
+		local RandomLabel1 = Instance.new("TextLabel")
+		local RandomLabel2 = Instance.new("TextLabel")
+		local HSV_Box = Instance.new("TextLabel")
 
-				Interface.CurrentPage = Section 
-			end
-		end
+		local dH,dS,dV = args.Default:ToHSV()
+		local DefaultRGB = Color3ToRGB(args.Default)
 
-		function Section:Deactivate()
-			if Section.IsActive then
-				Section.IsActive = false
-				Section.IsHovered = false
-				SkyUI:AnimateElement(Section["is42"], {TextTransparency = 0.4})
-				SkyUI:AnimateElement(Section["si44"], {ImageTransparency = 0.4})
-				SkyUI:AnimateElement(Section["is42"], {BackgroundTransparency = 1})
-				SkyUI:AnimateElement(Section["st45"], {Enabled = false})
-				Section["sc47"].Visible = false
-			end
-		end
+		Frame.Parent = PlayerDropdownMenu
+		Frame.BackgroundColor3 = Color3.fromRGB(15, 16, 19)
+		Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		Frame.BorderSizePixel = 0
+		Frame.Position = UDim2.new(0.0421940945, 0, 0.107011072, 0)
+		Frame.Size = UDim2.new(0.915611804, 0, 0.833948314, 0)
 
-		Section["is42"].MouseEnter:Connect(function()
-			Section.IsHovered = true
+		UICorner.Parent = Frame
 
-			if not Section.IsActive then
-				SkyUI:AnimateElement(Section["is42"], {TextTransparency = 0})
-				SkyUI:AnimateElement(Section["si44"], {ImageTransparency = 0})
-			end
+		Frame_2.Parent = Frame
+		Frame_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		Frame_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		Frame_2.BorderSizePixel = 0
+		Frame_2.Position = UDim2.new(0.838709652, 0, 0.0442477874, 0)
+		Frame_2.Size = UDim2.new(0.110599078, 0, 0.681415915, 0)
+
+		ValueButton.Name = "ValueButton"
+		ValueButton.Parent = Frame_2
+		ValueButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		ValueButton.BackgroundTransparency = 1.000
+		ValueButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		ValueButton.BorderSizePixel = 0
+		ValueButton.Size = UDim2.new(1, 0, 1, 0)
+
+		UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 0, 0))}
+		UIGradient.Rotation = 90
+		UIGradient.Parent = Frame_2
+
+		ImageLabel.Parent = Frame
+		ImageLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		ImageLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		ImageLabel.BorderSizePixel = 0
+		ImageLabel.Position = UDim2.new(0.059907835, 0, 0.0442477874, 0)
+		ImageLabel.Size = UDim2.new(0.709677398, 0, 0.681415915, 0)
+		ImageLabel.Image = "http://www.roblox.com/asset/?id=13037988771"
+
+		HSIButton.Name = "HSIButton"
+		HSIButton.Parent = ImageLabel
+		HSIButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		HSIButton.BackgroundTransparency = 1.000
+		HSIButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		HSIButton.BorderSizePixel = 0
+		HSIButton.Size = UDim2.new(1, 0, 1, 0)
+
+		RGB_Box.Name = "RGB_Box"
+		RGB_Box.Parent = Frame
+		RGB_Box.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		RGB_Box.BackgroundTransparency = 1.000
+		RGB_Box.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		RGB_Box.BorderSizePixel = 0
+		RGB_Box.Position = UDim2.new(0.221198156, 0, 0.761061966, 0)
+		RGB_Box.Size = UDim2.new(0.54838711, 0, 0.0707964599, 0)
+		RGB_Box.FontFace = defaultFont
+		RGB_Box.Text = `{DefaultRGB.R},`..` {DefaultRGB.G},`..` {DefaultRGB.B}`
+		RGB_Box.TextColor3 = Color3.fromRGB(255, 255, 255)
+		RGB_Box.TextSize = 14.000
+		RGB_Box.TextXAlignment = Enum.TextXAlignment.Left
+
+		RandomLabel1.Name = "RandomLabel1"
+		RandomLabel1.Parent = Frame
+		RandomLabel1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		RandomLabel1.BackgroundTransparency = 1.000
+		RandomLabel1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		RandomLabel1.BorderSizePixel = 0
+		RandomLabel1.Position = UDim2.new(0.059907835, 0, 0.761061966, 0)
+		RandomLabel1.Size = UDim2.new(0.161290318, 0, 0.0619469024, 0)
+		RandomLabel1.FontFace = defaultFont
+		RandomLabel1.Text = "RGB:"
+		RandomLabel1.TextColor3 = Color3.fromRGB(255, 255, 255)
+		RandomLabel1.TextSize = 18.000
+		RandomLabel1.TextXAlignment = Enum.TextXAlignment.Left
+
+		RandomLabel2.Name = "RandomLabel2"
+		RandomLabel2.Parent = Frame
+		RandomLabel2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		RandomLabel2.BackgroundTransparency = 1.000
+		RandomLabel2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		RandomLabel2.BorderSizePixel = 0
+		RandomLabel2.Position = UDim2.new(0.059907835, 0, 0.840707958, 0)
+		RandomLabel2.Size = UDim2.new(0.161290318, 0, 0.0619469024, 0)
+		RandomLabel2.FontFace = defaultFont
+		RandomLabel2.Text = "HSV:"
+		RandomLabel2.TextColor3 = Color3.fromRGB(255, 255, 255)
+		RandomLabel2.TextSize = 18.000
+		RandomLabel2.TextXAlignment = Enum.TextXAlignment.Left
+
+		HSV_Box.Name = "HSV_Box"
+		HSV_Box.Parent = Frame
+		HSV_Box.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		HSV_Box.BackgroundTransparency = 1.000
+		HSV_Box.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		HSV_Box.BorderSizePixel = 0
+		HSV_Box.Position = UDim2.new(0.221198156, 0, 0.840707958, 0)
+		HSV_Box.Size = UDim2.new(0.54838711, 0, 0.0707964599, 0)
+		HSV_Box.FontFace = defaultFont
+		HSV_Box.Text = `{DPRound(dH,3)},`..` {DPRound(dS,3)},`..` {DPRound(dV,3)}`
+		HSV_Box.TextColor3 = Color3.fromRGB(255, 255, 255)
+		HSV_Box.TextSize = 14.000
+		HSV_Box.TextXAlignment = Enum.TextXAlignment.Left
+
+		PlayerDropdownMenu.Name = "PlayerDropdownMenu"
+		PlayerDropdownMenu.Parent = SideBar
+		PlayerDropdownMenu.BackgroundColor3 = Color3.fromRGB(9, 10, 12)
+		PlayerDropdownMenu.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		PlayerDropdownMenu.BorderSizePixel = 0
+		PlayerDropdownMenu.Position = UDim2.new(-1.1, 0, -0.0032258064, 0)
+		PlayerDropdownMenu.Size = UDim2.new(0, 237, 0, 271)
+
+		TitleText.Name = "TitleText"
+		TitleText.Parent = PlayerDropdownMenu
+		TitleText.AnchorPoint = Vector2.new(0, 0.5)
+		TitleText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		TitleText.BackgroundTransparency = 1.000
+		TitleText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		TitleText.BorderSizePixel = 0
+		TitleText.Position = UDim2.new(0.0421940945, 0, 0.0585791096, 0)
+		TitleText.Size = UDim2.new(0, 226, 0, 28)
+		TitleText.FontFace = defaultFont
+		TitleText.Text = args.Text
+		TitleText.TextColor3 = Color3.fromRGB(255, 255, 255)
+		TitleText.TextSize = 20.000
+		TitleText.TextXAlignment = Enum.TextXAlignment.Left
+
+		local Continue = Instance.new("ImageButton")
+		Continue.Name = "Continue"
+		Continue.Parent = Frame
+		Continue.BackgroundTransparency = 1.000
+		Continue.LayoutOrder = 10
+		Continue.Position = UDim2.new(0.801369965, 0, 0.757837057, 0)
+		Continue.Size = UDim2.new(0, 32, 0, 32)
+		Continue.ZIndex = 2
+		Continue.Image = "rbxassetid://3926307971"
+		Continue.ImageRectOffset = Vector2.new(764, 244)
+		Continue.ImageRectSize = Vector2.new(36, 36)
+		SideBar.ClipsDescendants = true
+
+		assignClickAnimation(Continue,false)
+
+		local introTween = game:GetService("TweenService"):Create(PlayerDropdownMenu, TweenInfo.new(.4, Enum.EasingStyle.Cubic, Enum.EasingDirection.Out), {Position = UDim2.new(0, 0, -0.0032258064, 0)})
+		introTween:Play()
+
+		local isColorSelected = false
+
+		local pickingColor = false
+		local pickingValue = false
+		addConnection(HSIButton.MouseButton1Down,function() 
+			pickingColor = true
 		end)
-
-		Section["is42"].MouseLeave:Connect(function()
-			Section.IsHovered = false
-
-			if not Section.IsActive then
-				SkyUI:AnimateElement(Section["is42"], {TextTransparency = 0.4})
-				SkyUI:AnimateElement(Section["si44"], {ImageTransparency = 0.4})
-			end
+		addConnection(HSIButton.MouseButton1Up,function() 
+			pickingColor = false
 		end)
-
-		UserInputService.InputBegan:Connect(function(Input, GPE)
-			if GPE then return end
-
-			if Input.UserInputType == Enum.UserInputType.MouseButton1 then
-				if Section.IsHovered then
-					Section:Activate()
-				end
-			end
+		addConnection(ValueButton.MouseButton1Down,function() 
+			pickingValue = true
 		end)
+		addConnection(ValueButton.MouseButton1Up,function() 
+			pickingValue = false
+		end)
+		local currentHue = 0
+		local currentSaturation = 1
+		local currentValue = 1
 
-		if Interface.CurrentPage == nil then
-			Section:Activate() 
-		end
-		
-		function Section:AddText(Options)
-			Options = SkyUI:CheckOptions({
-				Text = "Text",
-				Style = "Normal"
-			}, Options)
-			
-			local TextElement = {
-				IsHovered = false
-			}
-			
-			
-			if Options.Style == "Normal" then
-				-- StarterGui.SkyUI.MainFrame.Content.SectionContent.TextElement
-				TextElement["te50"] = Instance.new("Frame", Section["sc47"]);
-				TextElement["te50"]["BorderSizePixel"] = 0;
-				TextElement["te50"]["BackgroundColor3"] = Color3.fromRGB(25, 25, 25);
-				TextElement["te50"]["Size"] = UDim2.new(1, 0, 0, 35);
-				TextElement["te50"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-				TextElement["te50"]["Name"] = [[TextElement]];
-				
-				-- StarterGui.SkyUI.MainFrame.Content.SectionContent.TextElement.UIStroke
-				TextElement["st51"] = Instance.new("UIStroke", TextElement["te50"]);
-				TextElement["st51"]["Transparency"] = 0.96;
-				TextElement["st51"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
-				TextElement["st51"]["Color"] = Color3.fromRGB(255, 255, 255);
+		addConnection(game:GetService("RunService").RenderStepped, function(deltaTime)
+			if pickingColor or pickingValue then
+				local mouse = game.Players.LocalPlayer:GetMouse()
+				local mouseX = mouse.X
+				local mouseY = mouse.Y
 
-				-- StarterGui.SkyUI.MainFrame.Content.SectionContent.TextElement.UIPadding
-				TextElement["p52"] = Instance.new("UIPadding", TextElement["te50"]);
-				TextElement["p52"]["PaddingTop"] = UDim.new(0, 8);
-				TextElement["p52"]["PaddingLeft"] = UDim.new(0, 12);
-				TextElement["p52"]["PaddingBottom"] = UDim.new(0, 8);
+				if pickingColor then
+					local popX = math.clamp(mouseX - ImageLabel.AbsolutePosition.X, 0, ImageLabel.AbsoluteSize.X)
+					local popY = math.clamp(mouseY - ImageLabel.AbsolutePosition.Y, 0, ImageLabel.AbsoluteSize.Y)
 
-				-- StarterGui.SkyUI.MainFrame.Content.SectionContent.TextElement.UICorner
-				TextElement["c53"] = Instance.new("UICorner", TextElement["te50"]);
-				TextElement["c53"]["CornerRadius"] = UDim.new(0, 5);
-
-				-- StarterGui.SkyUI.MainFrame.Content.SectionContent.TextElement.TextContent
-				TextElement["tc54"] = Instance.new("TextLabel", TextElement["te50"]);
-				TextElement["tc54"]["BorderSizePixel"] = 0;
-				TextElement["tc54"]["TextXAlignment"] = Enum.TextXAlignment.Left;
-				TextElement["tc54"]["TextTransparency"] = 0.2;
-				TextElement["tc54"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-				TextElement["tc54"]["TextSize"] = 18;
-				TextElement["tc54"]["FontFace"] = Font.new([[rbxassetid://11702779517]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-				TextElement["tc54"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-				TextElement["tc54"]["BackgroundTransparency"] = 1;
-				TextElement["tc54"]["Size"] = UDim2.new(0.85, 0, 1, 0);
-				TextElement["tc54"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-				TextElement["tc54"]["Name"] = [[TextContent]];
-				TextElement["tc54"]["TextYAlignment"] = Enum.TextYAlignment.Top;
-				TextElement["tc54"]["TextWrapped"] = true
-
-				-- StarterGui.SkyUI.MainFrame.Content.SectionContent.TextElement.TextIcon
-				TextElement["ti55"] = Instance.new("ImageLabel", TextElement["te50"]);
-				TextElement["ti55"]["BorderSizePixel"] = 0;
-				TextElement["ti55"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-				TextElement["ti55"]["ImageTransparency"] = 0.3;
-				TextElement["ti55"]["AnchorPoint"] = Vector2.new(1, 0);
-				TextElement["ti55"]["Image"] = [[rbxassetid://18824545160]];
-				TextElement["ti55"]["Size"] = UDim2.new(0, 22, 0, 22);
-				TextElement["ti55"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-				TextElement["ti55"]["BackgroundTransparency"] = 1;
-				TextElement["ti55"]["Name"] = [[TextIcon]];
-				TextElement["ti55"]["Position"] = UDim2.new(1, -10, 0, -1);
-				
-				function TextElement:UpdateText(Text)
-					Options.Text = Text
-					TextElement:_Refresh()
-				end
-				
-				function TextElement:GetText()
-					return Options.Text
+					currentHue = 1 - popX / ImageLabel.AbsoluteSize.X
+					currentSaturation = 1 - (popY / ImageLabel.AbsoluteSize.Y)
 				end
 
-				function TextElement:_Refresh()
-					TextElement["tc54"]["Text"] = Options.Text
-					TextElement["tc54"]["Size"] = UDim2.new(TextElement["tc54"]["Size"].X.Scale, TextElement["tc54"]["Size"].X.Offset, 0, math.huge)
-					TextElement["tc54"]["Size"] = UDim2.new(TextElement["tc54"]["Size"].X.Scale, TextElement["tc54"]["Size"].X.Offset, 0, TextElement["tc54"]["TextBounds"].Y)
-					TextElement["te50"]["Size"] = UDim2.new(TextElement["te50"]["Size"].X.Scale, TextElement["te50"]["Size"].X.Offset, 0, TextElement["tc54"]["TextBounds"].Y + 18)
-				end
-				
-				TextElement["te50"].MouseEnter:Connect(function()
-					TextElement.IsHovered = true
-					SkyUI:AnimateElement(TextElement["ti55"], {ImageTransparency = 0})
-					SkyUI:AnimateElement(TextElement["tc54"], {TextTransparency = 0})
-					SkyUI:AnimateElement(TextElement["st51"], {Transparency = 0.9})
-				end)
-
-				TextElement["te50"].MouseLeave:Connect(function()
-					TextElement.IsHovered = false
-
-					if not TextElement.IsPressed then
-						SkyUI:AnimateElement(TextElement["ti55"], {ImageTransparency = 0.3})
-						SkyUI:AnimateElement(TextElement["tc54"], {TextTransparency = 0.2})
-						SkyUI:AnimateElement(TextElement["st51"], {Transparency = 0.96})
-					end
-				end)
-				
-				TextElement:UpdateText(Options.Text)
-			elseif Options.Style == "Info" then
-				-- StarterGui.SkyUI.MainFrame.Content.SectionContent.InfoText
-				TextElement["it56"] = Instance.new("Frame", Section["sc47"]);
-				TextElement["it56"]["BorderSizePixel"] = 0;
-				TextElement["it56"]["BackgroundColor3"] = Color3.fromRGB(10, 20, 25);
-				TextElement["it56"]["Size"] = UDim2.new(1, 0, 0, 35);
-				TextElement["it56"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-				TextElement["it56"]["Name"] = [[Info]];
-
-				-- StarterGui.SkyUI.MainFrame.Content.SectionContent.InfoText.UIStroke
-				TextElement["st57"] = Instance.new("UIStroke", TextElement["it56"]);
-				TextElement["st57"]["Transparency"] = 0.51;
-				TextElement["st57"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
-				TextElement["st57"]["Color"] = Color3.fromRGB(40, 83, 104);
-
-				-- StarterGui.SkyUI.MainFrame.Content.SectionContent.InfoText.UIPadding
-				TextElement["p58"] = Instance.new("UIPadding", TextElement["it56"]);
-				TextElement["p58"]["PaddingTop"] = UDim.new(0, 8);
-				TextElement["p58"]["PaddingLeft"] = UDim.new(0, 12);
-				TextElement["p58"]["PaddingBottom"] = UDim.new(0, 8);
-
-				-- StarterGui.SkyUI.MainFrame.Content.SectionContent.InfoText.UICorner
-				TextElement["c59"] = Instance.new("UICorner", TextElement["it56"]);
-				TextElement["c59"]["CornerRadius"] = UDim.new(0, 5);
-
-				-- StarterGui.SkyUI.MainFrame.Content.SectionContent.InfoText.InfoContent
-				TextElement["ic60"] = Instance.new("TextLabel", TextElement["it56"]);
-				TextElement["ic60"]["BorderSizePixel"] = 0;
-				TextElement["ic60"]["TextXAlignment"] = Enum.TextXAlignment.Left;
-				TextElement["ic60"]["TextTransparency"] = 0.2;
-				TextElement["ic60"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-				TextElement["ic60"]["TextSize"] = 18;
-				TextElement["ic60"]["FontFace"] = Font.new([[rbxassetid://11702779517]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-				TextElement["ic60"]["TextColor3"] = Color3.fromRGB(61, 127, 158);
-				TextElement["ic60"]["BackgroundTransparency"] = 1;
-				TextElement["ic60"]["Size"] = UDim2.new(0.85, 0, 1, 0);
-				TextElement["ic60"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-				TextElement["ic60"]["Name"] = [[InfoContent]];
-				TextElement["ic60"]["TextYAlignment"] = Enum.TextYAlignment.Top;
-				TextElement["ic60"]["TextWrapped"] = true
-
-				-- StarterGui.SkyUI.MainFrame.Content.SectionContent.InfoText.InfoIcon
-				TextElement["ii61"] = Instance.new("ImageLabel", TextElement["it56"]);
-				TextElement["ii61"]["BorderSizePixel"] = 0;
-				TextElement["ii61"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-				TextElement["ii61"]["ImageTransparency"] = 0.2;
-				TextElement["ii61"]["ImageColor3"] = Color3.fromRGB(61, 127, 158);
-				TextElement["ii61"]["AnchorPoint"] = Vector2.new(1, 0);
-				TextElement["ii61"]["Image"] = [[rbxassetid://18824453094]];
-				TextElement["ii61"]["Size"] = UDim2.new(0, 25, 0, 25);
-				TextElement["ii61"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-				TextElement["ii61"]["BackgroundTransparency"] = 1;
-				TextElement["ii61"]["Name"] = [[InfoIcon]];
-				TextElement["ii61"]["Position"] = UDim2.new(1, -10, 0, -3);
-				
-				function TextElement:UpdateText(Text)
-					Options.Text = Text
-					TextElement:_Refresh()
-				end
-				
-				function TextElement:GetText()
-					return Options.Text
+				if pickingValue then
+					local valY = math.clamp(mouseY - ValueButton.AbsolutePosition.Y, 0, ValueButton.AbsoluteSize.Y)
+					currentValue = 1 - (valY / ValueButton.AbsoluteSize.Y)
 				end
 
-				function TextElement:_Refresh()
-					TextElement["ic60"]["Text"] = Options.Text
-					TextElement["ic60"]["Size"] = UDim2.new(TextElement["ic60"]["Size"].X.Scale, TextElement["ic60"]["Size"].X.Offset, 0, math.huge)
-					TextElement["ic60"]["Size"] = UDim2.new(TextElement["ic60"]["Size"].X.Scale, TextElement["ic60"]["Size"].X.Offset, 0, TextElement["ic60"]["TextBounds"].Y)
-					TextElement["it56"]["Size"] = UDim2.new(TextElement["it56"]["Size"].X.Scale, TextElement["it56"]["Size"].X.Offset, 0, TextElement["ic60"]["TextBounds"].Y + 18)
-				end
-				
-				TextElement["it56"].MouseEnter:Connect(function()
-					TextElement.IsHovered = true
-					SkyUI:AnimateElement(TextElement["ii61"], {ImageTransparency = 0})
-					SkyUI:AnimateElement(TextElement["ic60"], {TextTransparency = 0})
-					SkyUI:AnimateElement(TextElement["st57"], {Transparency = 0.4})
-				end)
-
-				TextElement["it56"].MouseLeave:Connect(function()
-					TextElement.IsHovered = false
-
-					if not TextElement.IsPressed then
-						SkyUI:AnimateElement(TextElement["ii61"], {ImageTransparency = 0.3})
-						SkyUI:AnimateElement(TextElement["ic60"], {TextTransparency = 0.2})
-						SkyUI:AnimateElement(TextElement["st57"], {Transparency = 0.51})
-					end
-				end)
-
-				TextElement:UpdateText(Options.Text)
-			elseif Options.Style == "Warning" then
-				-- StarterGui.SkyUI.MainFrame.Content.SectionContent.WarningText
-				TextElement["wt62"] = Instance.new("Frame", Section["sc47"]);
-				TextElement["wt62"]["BorderSizePixel"] = 0;
-				TextElement["wt62"]["BackgroundColor3"] = Color3.fromRGB(32, 31, 12);
-				TextElement["wt62"]["Size"] = UDim2.new(1, 0, 0, 35);
-				TextElement["wt62"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-				TextElement["wt62"]["Name"] = [[Warning]];
-
-				-- StarterGui.SkyUI.MainFrame.Content.SectionContent.WarningText.UIStroke
-				TextElement["st63"] = Instance.new("UIStroke", TextElement["wt62"]);
-				TextElement["st63"]["Transparency"] = 0.51;
-				TextElement["st63"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
-				TextElement["st63"]["Color"] = Color3.fromRGB(104, 101, 37);
-
-				-- StarterGui.SkyUI.MainFrame.Content.SectionContent.WarningText.UIPadding
-				TextElement["p64"] = Instance.new("UIPadding", TextElement["wt62"]);
-				TextElement["p64"]["PaddingTop"] = UDim.new(0, 8);
-				TextElement["p64"]["PaddingLeft"] = UDim.new(0, 12);
-				TextElement["p64"]["PaddingBottom"] = UDim.new(0, 8);
-
-				-- StarterGui.SkyUI.MainFrame.Content.SectionContent.WarningText.UICorner
-				TextElement["c65"] = Instance.new("UICorner", TextElement["wt62"]);
-				TextElement["c65"]["CornerRadius"] = UDim.new(0, 5);
-
-				-- StarterGui.SkyUI.MainFrame.Content.SectionContent.WarningText.WarningContent
-				TextElement["wc66"] = Instance.new("TextLabel", TextElement["wt62"]);
-				TextElement["wc66"]["BorderSizePixel"] = 0;
-				TextElement["wc66"]["TextXAlignment"] = Enum.TextXAlignment.Left;
-				TextElement["wc66"]["TextTransparency"] = 0.2;
-				TextElement["wc66"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-				TextElement["wc66"]["TextSize"] = 18;
-				TextElement["wc66"]["FontFace"] = Font.new([[rbxassetid://11702779517]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-				TextElement["wc66"]["TextColor3"] = Color3.fromRGB(150, 147, 53);
-				TextElement["wc66"]["BackgroundTransparency"] = 1;
-				TextElement["wc66"]["Size"] = UDim2.new(0.85, 0, 1, 0);
-				TextElement["wc66"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-				TextElement["wc66"]["Name"] = [[WarningContent]];
-				TextElement["wc66"]["TextYAlignment"] = Enum.TextYAlignment.Top;
-				TextElement["wc66"]["TextWrapped"] = true
-
-				-- StarterGui.SkyUI.MainFrame.Content.SectionContent.WarningText.WarningIcon
-				TextElement["wi67"] = Instance.new("ImageLabel", TextElement["wt62"]);
-				TextElement["wi67"]["BorderSizePixel"] = 0;
-				TextElement["wi67"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-				TextElement["wi67"]["ImageTransparency"] = 0.2;
-				TextElement["wi67"]["ImageColor3"] = Color3.fromRGB(150, 147, 53);
-				TextElement["wi67"]["AnchorPoint"] = Vector2.new(1, 0);
-				TextElement["wi67"]["Image"] = [[rbxassetid://18824479970]];
-				TextElement["wi67"]["Size"] = UDim2.new(0, 22, 0, 22);
-				TextElement["wi67"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-				TextElement["wi67"]["BackgroundTransparency"] = 1;
-				TextElement["wi67"]["Name"] = [[WarningIcon]];
-				TextElement["wi67"]["Position"] = UDim2.new(1, -10, 0, -2);
-				
-				function TextElement:UpdateText(Text)
-					Options.Text = Text
-					TextElement:_Refresh()
-				end
-				
-				function TextElement:GetText()
-					return Options.Text
-				end
-
-				function TextElement:_Refresh()
-					TextElement["wc66"]["Text"] = Options.Text
-					TextElement["wc66"]["Size"] = UDim2.new(TextElement["wc66"]["Size"].X.Scale, TextElement["wc66"]["Size"].X.Offset, 0, math.huge)
-					TextElement["wc66"]["Size"] = UDim2.new(TextElement["wc66"]["Size"].X.Scale, TextElement["wc66"]["Size"].X.Offset, 0, TextElement["wc66"]["TextBounds"].Y)
-					TextElement["wt62"]["Size"] = UDim2.new(TextElement["wt62"]["Size"].X.Scale, TextElement["wt62"]["Size"].X.Offset, 0, TextElement["wc66"]["TextBounds"].Y + 18)
-				end
-				
-				TextElement["wt62"].MouseEnter:Connect(function()
-					TextElement.IsHovered = true
-					SkyUI:AnimateElement(TextElement["wi67"], {ImageTransparency = 0})
-					SkyUI:AnimateElement(TextElement["wc66"], {TextTransparency = 0})
-					SkyUI:AnimateElement(TextElement["st63"], {Transparency = 0.4})
-				end)
-
-				TextElement["wt62"].MouseLeave:Connect(function()
-					TextElement.IsHovered = false
-
-					if not TextElement.IsPressed then
-						SkyUI:AnimateElement(TextElement["wi67"], {ImageTransparency = 0.3})
-						SkyUI:AnimateElement(TextElement["wc66"], {TextTransparency = 0.2})
-						SkyUI:AnimateElement(TextElement["st63"], {Transparency = 0.51})
-					end
-				end)
-
-				TextElement:UpdateText(Options.Text)
-			elseif Options.Style == "Error" then
-				-- StarterGui.SkyUI.MainFrame.Content.SectionContent.ErrorText
-				TextElement["et68"] = Instance.new("Frame", Section["sc47"]);
-				TextElement["et68"]["BorderSizePixel"] = 0;
-				TextElement["et68"]["BackgroundColor3"] = Color3.fromRGB(32, 14, 12);
-				TextElement["et68"]["Size"] = UDim2.new(1, 0, 0, 35);
-				TextElement["et68"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-				TextElement["et68"]["Name"] = [[Error]];
-
-				-- StarterGui.SkyUI.MainFrame.Content.SectionContent.ErrorText.UIStroke
-				TextElement["st69"] = Instance.new("UIStroke", TextElement["et68"]);
-				TextElement["st69"]["Transparency"] = 0.51;
-				TextElement["st69"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
-				TextElement["st69"]["Color"] = Color3.fromRGB(104, 38, 38);
-
-				-- StarterGui.SkyUI.MainFrame.Content.SectionContent.ErrorText.UIPadding
-				TextElement["p70"] = Instance.new("UIPadding", TextElement["et68"]);
-				TextElement["p70"]["PaddingTop"] = UDim.new(0, 8);
-				TextElement["p70"]["PaddingLeft"] = UDim.new(0, 12);
-				TextElement["p70"]["PaddingBottom"] = UDim.new(0, 8);
-
-				-- StarterGui.SkyUI.MainFrame.Content.SectionContent.ErrorText.UICorner
-				TextElement["c71"] = Instance.new("UICorner", TextElement["et68"]);
-				TextElement["c71"]["CornerRadius"] = UDim.new(0, 5);
-
-				-- StarterGui.SkyUI.MainFrame.Content.SectionContent.ErrorText.ErrorContent
-				TextElement["ec72"] = Instance.new("TextLabel", TextElement["et68"]);
-				TextElement["ec72"]["BorderSizePixel"] = 0;
-				TextElement["ec72"]["TextXAlignment"] = Enum.TextXAlignment.Left;
-				TextElement["ec72"]["TextTransparency"] = 0.2;
-				TextElement["ec72"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-				TextElement["ec72"]["TextSize"] = 18;
-				TextElement["ec72"]["FontFace"] = Font.new([[rbxassetid://11702779517]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-				TextElement["ec72"]["TextColor3"] = Color3.fromRGB(150, 54, 54);
-				TextElement["ec72"]["BackgroundTransparency"] = 1;
-				TextElement["ec72"]["Size"] = UDim2.new(0.85, 0, 1, 0);
-				TextElement["ec72"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-				TextElement["ec72"]["Name"] = [[ErrorContent]];
-				TextElement["ec72"]["TextYAlignment"] = Enum.TextYAlignment.Top;
-				TextElement["ec72"]["TextWrapped"] = true
-
-				-- StarterGui.SkyUI.MainFrame.Content.SectionContent.ErrorText.ErrorIcon
-				TextElement["ei73"] = Instance.new("ImageLabel", TextElement["et68"]);
-				TextElement["ei73"]["BorderSizePixel"] = 0;
-				TextElement["ei73"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-				TextElement["ei73"]["ImageTransparency"] = 0.2;
-				TextElement["ei73"]["ImageColor3"] = Color3.fromRGB(150, 49, 49);
-				TextElement["ei73"]["AnchorPoint"] = Vector2.new(1, 0);
-				TextElement["ei73"]["Image"] = [[rbxassetid://18854112224]];
-				TextElement["ei73"]["Size"] = UDim2.new(0, 24, 0, 24);
-				TextElement["ei73"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-				TextElement["ei73"]["BackgroundTransparency"] = 1;
-				TextElement["ei73"]["Name"] = [[ErrorIcon]];
-				TextElement["ei73"]["Position"] = UDim2.new(1, -10, 0, -2);
-
-				function TextElement:UpdateText(Text)
-					Options.Text = Text
-					TextElement:_Refresh()
-				end
-
-				function TextElement:GetText()
-					return Options.Text
-				end
-
-				function TextElement:_Refresh()
-					TextElement["ec72"]["Text"] = Options.Text
-					TextElement["ec72"]["Size"] = UDim2.new(TextElement["ec72"]["Size"].X.Scale, TextElement["ec72"]["Size"].X.Offset, 0, math.huge)
-					TextElement["ec72"]["Size"] = UDim2.new(TextElement["ec72"]["Size"].X.Scale, TextElement["ec72"]["Size"].X.Offset, 0, TextElement["ec72"]["TextBounds"].Y)
-					TextElement["et68"]["Size"] = UDim2.new(TextElement["et68"]["Size"].X.Scale, TextElement["et68"]["Size"].X.Offset, 0, TextElement["ec72"]["TextBounds"].Y + 18)
-				end
-
-				TextElement["et68"].MouseEnter:Connect(function()
-					TextElement.IsHovered = true
-					SkyUI:AnimateElement(TextElement["ei73"], {ImageTransparency = 0})
-					SkyUI:AnimateElement(TextElement["ec72"], {TextTransparency = 0})
-					SkyUI:AnimateElement(TextElement["st69"], {Transparency = 0.4})
-				end)
-
-				TextElement["et68"].MouseLeave:Connect(function()
-					TextElement.IsHovered = false
-
-					if not TextElement.IsPressed then
-						SkyUI:AnimateElement(TextElement["ei73"], {ImageTransparency = 0.3})
-						SkyUI:AnimateElement(TextElement["ec72"], {TextTransparency = 0.2})
-						SkyUI:AnimateElement(TextElement["st69"], {Transparency = 0.51})
-					end
-				end)
-
-				TextElement:UpdateText(Options.Text)
-			end
-			
-			return TextElement
-		end
-		
-		function Section:AddButton(Options)
-			Options = SkyUI:CheckOptions({
-				Name = "Button",
-				Function = function()
-					print("Button was clicked!")
-				end,
-			}, Options)
-			
-			local ButtonElement = {
-				IsHovered = false,
-				IsPressed = false
-			}
-			
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.ButtonElement
-			ButtonElement["be74"] = Instance.new("Frame", Section["sc47"]);
-			ButtonElement["be74"]["BorderSizePixel"] = 0;
-			ButtonElement["be74"]["BackgroundColor3"] = Color3.fromRGB(25, 25, 25);
-			ButtonElement["be74"]["Size"] = UDim2.new(1, 0, 0, 45);
-			ButtonElement["be74"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-			ButtonElement["be74"]["Name"] = [[ButtonElement]];
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.ButtonElement.UIStroke
-			ButtonElement["st75"] = Instance.new("UIStroke", ButtonElement["be74"]);
-			ButtonElement["st75"]["Transparency"] = 0.96;
-			ButtonElement["st75"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
-			ButtonElement["st75"]["Color"] = Color3.fromRGB(255, 255, 255);
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.ButtonElement.UIPadding
-			ButtonElement["p76"] = Instance.new("UIPadding", ButtonElement["be74"]);
-			ButtonElement["p76"]["PaddingTop"] = UDim.new(0, 8);
-			ButtonElement["p76"]["PaddingLeft"] =  UDim.new(0, 12);
-			ButtonElement["p76"]["PaddingBottom"] = UDim.new(0, 8);
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.ButtonElement.UICorner
-			ButtonElement["c77"] = Instance.new("UICorner", ButtonElement["be74"]);
-			ButtonElement["c77"]["CornerRadius"] = UDim.new(0, 5);
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.ButtonElement.ButtonIcon
-			ButtonElement["bi78"] = Instance.new("ImageLabel", ButtonElement["be74"]);
-			ButtonElement["bi78"]["BorderSizePixel"] = 0;
-			ButtonElement["bi78"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-			ButtonElement["bi78"]["ImageTransparency"] = 0.3;
-			ButtonElement["bi78"]["AnchorPoint"] = Vector2.new(1, 0);
-			ButtonElement["bi78"]["Image"] = [[rbxassetid://18824415379]];
-			ButtonElement["bi78"]["Size"] = UDim2.new(0, 25, 0, 25);
-			ButtonElement["bi78"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-			ButtonElement["bi78"]["BackgroundTransparency"] = 1;
-			ButtonElement["bi78"]["Name"] = [[ButtonIcon]];
-			ButtonElement["bi78"]["Position"] = UDim2.new(1, -8, 0, 2);
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.ButtonElement.ButtonName
-			ButtonElement["bn79"] = Instance.new("TextLabel", ButtonElement["be74"]);
-			ButtonElement["bn79"]["BorderSizePixel"] = 0;
-			ButtonElement["bn79"]["TextXAlignment"] = Enum.TextXAlignment.Left;
-			ButtonElement["bn79"]["TextTransparency"] = 0.2;
-			ButtonElement["bn79"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-			ButtonElement["bn79"]["TextSize"] = 18;
-			ButtonElement["bn79"]["FontFace"] = Font.new([[rbxassetid://11702779517]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-			ButtonElement["bn79"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-			ButtonElement["bn79"]["BackgroundTransparency"] = 1;
-			ButtonElement["bn79"]["Size"] = UDim2.new(0.85, 0, 1, 0);
-			ButtonElement["bn79"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-			ButtonElement["bn79"]["Text"] = Options.Name;
-			ButtonElement["bn79"]["Name"] = [[ButtonName]];
-			
-			function ButtonElement:SetName(Name)
-				ButtonElement["bn79"]["Text"] = Name
-			end
-
-			function ButtonElement:SetFunction(Func)
-				Options.Function = Func
-			end
-			
-			ButtonElement["be74"].MouseEnter:Connect(function()
-				ButtonElement.IsHovered = true
-				SkyUI:AnimateElement(ButtonElement["bi78"], {ImageTransparency = 0})
-				SkyUI:AnimateElement(ButtonElement["bn79"], {TextTransparency = 0})
-				SkyUI:AnimateElement(ButtonElement["st75"], {Transparency = 0.9})
-			end)
-			
-			ButtonElement["be74"].MouseLeave:Connect(function()
-				ButtonElement.IsHovered = false
-
-				if not ButtonElement.IsPressed then
-					SkyUI:AnimateElement(ButtonElement["bi78"], {ImageTransparency = 0.3})
-					SkyUI:AnimateElement(ButtonElement["bn79"], {TextTransparency = 0.2})
-					SkyUI:AnimateElement(ButtonElement["st75"], {Transparency = 0.96})
-				end
-			end)
-			
-			ButtonElement["be74"].InputBegan:Connect(function(Input, GPE)
-				if GPE then return end
-
-				if Input.UserInputType == Enum.UserInputType.MouseButton1 and ButtonElement.IsHovered then
-					ButtonElement.IsPressed = true
-					SkyUI:AnimateElement(ButtonElement["be74"], {BackgroundColor3 = Color3.fromRGB(28, 28, 28)})
-					SkyUI:AnimateElement(ButtonElement["st75"], {Transparency = 0.9})
-					Options.Function()
-				end
-			end)
-
-			ButtonElement["be74"].InputEnded:Connect(function(Input, GPE)
-				if GPE then return end
-
-				if Input.UserInputType == Enum.UserInputType.MouseButton1 then
-					ButtonElement.IsPressed = false
-					
-					if ButtonElement.IsHovered then
-						SkyUI:AnimateElement(ButtonElement["be74"], {BackgroundColor3 = Color3.fromRGB(25, 25, 25)})
-						SkyUI:AnimateElement(ButtonElement["bi78"], {ImageTransparency = 0})
-						SkyUI:AnimateElement(ButtonElement["bn79"], {TextTransparency = 0})
-						SkyUI:AnimateElement(ButtonElement["st75"], {Transparency = 0.9})
-					else
-						SkyUI:AnimateElement(ButtonElement["be74"], {BackgroundColor3 = Color3.fromRGB(25, 25, 25)})
-						SkyUI:AnimateElement(ButtonElement["st75"], {Transparency = 0.96})
-					end
-				end
-			end)
-			
-			return ButtonElement  
-		end
-		
-		function Section:AddSlider(Options)
-			Options = SkyUI:CheckOptions({
-				Name = "Slider",
-				Minimum = 0,
-				Maximum = 10,
-				Start = 5,
-				Precision = 0,
-				Function = function(Value) print("The Value is "..Value.."!") end
-			}, Options)
-			
-			local SliderElement = {
-				IsHovered = false,
-				IsPressed = false,
-				Connection = nil
-			}
-			
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.SliderElement
-			SliderElement["se80"] = Instance.new("Frame", Section["sc47"]);
-			SliderElement["se80"]["BorderSizePixel"] = 0;
-			SliderElement["se80"]["BackgroundColor3"] = Color3.fromRGB(25, 25, 25);
-			SliderElement["se80"]["Size"] = UDim2.new(1, 0, 0, 50);
-			SliderElement["se80"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-			SliderElement["se80"]["Name"] = [[SliderElement]];
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.SliderElement.UIStroke
-			SliderElement["st81"] = Instance.new("UIStroke", SliderElement["se80"]);
-			SliderElement["st81"]["Transparency"] = 0.96;
-			SliderElement["st81"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
-			SliderElement["st81"]["Color"] = Color3.fromRGB(255, 255, 255);
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.SliderElement.UIPadding
-			SliderElement["p82"] = Instance.new("UIPadding", SliderElement["se80"]);
-			SliderElement["p82"]["PaddingTop"] = UDim.new(0, 8);
-			SliderElement["p82"]["PaddingRight"] = UDim.new(0, 12);
-			SliderElement["p82"]["PaddingLeft"] = UDim.new(0, 12);
-			SliderElement["p82"]["PaddingBottom"] = UDim.new(0, 8);
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.SliderElement.UICorner
-			SliderElement["c83"] = Instance.new("UICorner", SliderElement["se80"]);
-			SliderElement["c83"]["CornerRadius"] = UDim.new(0, 5);
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.SliderElement.SliderName
-			SliderElement["sn84"] = Instance.new("TextLabel", SliderElement["se80"]);
-			SliderElement["sn84"]["BorderSizePixel"] = 0;
-			SliderElement["sn84"]["TextXAlignment"] = Enum.TextXAlignment.Left;
-			SliderElement["sn84"]["TextTransparency"] = 0.2;
-			SliderElement["sn84"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-			SliderElement["sn84"]["TextSize"] = 18;
-			SliderElement["sn84"]["FontFace"] = Font.new([[rbxassetid://11702779517]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-			SliderElement["sn84"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-			SliderElement["sn84"]["BackgroundTransparency"] = 1;
-			SliderElement["sn84"]["Size"] = UDim2.new(0.85, -10, 1, -10);
-			SliderElement["sn84"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-			SliderElement["sn84"]["Text"] = Options.Name;
-			SliderElement["sn84"]["Name"] = [[SliderName]];
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.SliderElement.SliderValue
-			SliderElement["sv85"] = Instance.new("TextLabel", SliderElement["se80"]);
-			SliderElement["sv85"]["BorderSizePixel"] = 0;
-			SliderElement["sv85"]["TextXAlignment"] = Enum.TextXAlignment.Right;
-			SliderElement["sv85"]["TextTransparency"] = 0.2;
-			SliderElement["sv85"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-			SliderElement["sv85"]["TextSize"] = 18;
-			SliderElement["sv85"]["FontFace"] = Font.new([[rbxassetid://11702779517]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-			SliderElement["sv85"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-			SliderElement["sv85"]["BackgroundTransparency"] = 1;
-			SliderElement["sv85"]["AnchorPoint"] = Vector2.new(1, 0);
-			SliderElement["sv85"]["Size"] = UDim2.new(0, 80, 1, -10);
-			SliderElement["sv85"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-			SliderElement["sv85"]["Text"] = tostring(Options.Start);
-			SliderElement["sv85"]["Name"] = [[SliderValue]];
-			SliderElement["sv85"]["Position"] = UDim2.new(1, 0, 0, 0);
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.SliderElement.SliderBackground
-			SliderElement["sb86"] = Instance.new("Frame", SliderElement["se80"]);
-			SliderElement["sb86"]["BorderSizePixel"] = 0;
-			SliderElement["sb86"]["BackgroundColor3"] = Color3.fromRGB(23, 23, 23);
-			SliderElement["sb86"]["AnchorPoint"] = Vector2.new(0, 1);
-			SliderElement["sb86"]["Size"] = UDim2.new(1, 0, 0, 6);
-			SliderElement["sb86"]["Position"] = UDim2.new(0, 0, 1, 0);
-			SliderElement["sb86"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-			SliderElement["sb86"]["Name"] = [[SliderBackground]];
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.SliderElement.SliderBackground.UICorner
-			SliderElement["c87"] = Instance.new("UICorner", SliderElement["sb86"]);
-			SliderElement["c87"]["CornerRadius"] = UDim.new(1, 0);
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.SliderElement.SliderBackground.UIStroke
-			SliderElement["st88"] = Instance.new("UIStroke", SliderElement["sb86"]);
-			SliderElement["st88"]["Transparency"] = 0.97;
-			SliderElement["st88"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
-			SliderElement["st88"]["Color"] = Color3.fromRGB(255, 255, 255);
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.SliderElement.SliderBackground.SliderFill
-			SliderElement["sf89"] = Instance.new("Frame", SliderElement["sb86"]);
-			SliderElement["sf89"]["BorderSizePixel"] = 0;
-			SliderElement["sf89"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-			SliderElement["sf89"]["Size"] = UDim2.new(0.5, 0, 1, 0);
-			SliderElement["sf89"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-			SliderElement["sf89"]["Name"] = [[SliderFill]];
-			SliderElement["sf89"]["BackgroundTransparency"] = 0.8;
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.SliderElement.SliderBackground.SliderFill.UICorner
-			SliderElement["c90"] = Instance.new("UICorner", SliderElement["sf89"]);
-			SliderElement["c90"]["CornerRadius"] = UDim.new(1, 0);
-			
-			function SliderElement:SetValue(Provided)
-				if Provided == nil then
-					local Percent = math.clamp((Mouse.X - SliderElement["se80"].AbsolutePosition.X) / (SliderElement["se80"].AbsoluteSize.X), 0, 1)
-					local Value = math.floor((Options.Maximum - Options.Minimum) * Percent * (10 ^ Options.Precision) + 0.5) / (10 ^ Options.Precision) + Options.Minimum
-
-					if Percent > 1 then
-						Percent = 1
-					end
-
-					SliderElement["sv85"].Text = tostring(Value)
-					SliderElement["sf89"].Size = UDim2.new(Percent, 0, 1, 0);
-				else
-					local Percent = (Provided - Options.Minimum) / (Options.Maximum - Options.Minimum)
-					local Value = math.floor(Provided * (10 ^ Options.Precision) + 0.5) / (10 ^ Options.Precision)
-						
-					if Percent > 1 then
-						Percent = 1
-					end
-					
-					SliderElement["sv85"].Text = tostring(Value)
-					SliderElement["sf89"].Size = UDim2.new(Percent, 0, 1, 0)
-				end
-
-				Options.Function(SliderElement:GetValue())
-			end
-			
-			function SliderElement:SetName(Name)
-				SliderElement["sn84"]["Name"] = Name
-			end
-			
-			function SliderElement:SetFunction(Func)
-				Options.Function = Func
-			end
-			
-			function SliderElement:GetValue()
-				return tostring(SliderElement["sv85"].Text)
-			end
-			
-			SliderElement:SetValue(Options.Start)
-			
-			SliderElement["se80"].MouseEnter:Connect(function()
-				SliderElement.IsHovered = true
-				SkyUI:AnimateElement(SliderElement["sn84"], {TextTransparency = 0})
-				SkyUI:AnimateElement(SliderElement["sv85"], {TextTransparency = 0})
-				SkyUI:AnimateElement(SliderElement["st81"], {Transparency = 0.9})
-			end)
-
-			SliderElement["se80"].MouseLeave:Connect(function()
-				SliderElement.IsHovered = false
-
-				if not SliderElement.IsPressed then
-					SkyUI:AnimateElement(SliderElement["sn84"], {TextTransparency = 0.2})
-					SkyUI:AnimateElement(SliderElement["sv85"], {TextTransparency = 0.2})
-					SkyUI:AnimateElement(SliderElement["st81"], {Transparency = 0.96})
-				end
-			end)
-
-			SliderElement["se80"].InputBegan:Connect(function(Input, GPE)
-				if GPE then return end
-
-				if Input.UserInputType == Enum.UserInputType.MouseButton1 and SliderElement.IsHovered then
-					SliderElement.IsPressed = true
-					SkyUI:AnimateElement(SliderElement["se80"], {BackgroundColor3 = Color3.fromRGB(28, 28, 28)})
-					SkyUI:AnimateElement(SliderElement["st81"], {Transparency = 0.9})
-					
-					if not SliderElement.Connection then
-						SliderElement.Connection = RunService.RenderStepped:Connect(function()
-							SliderElement:SetValue()
-						end)
-					end
-				end
-			end)
-
-			SliderElement["se80"].InputEnded:Connect(function(Input, GPE)
-				if GPE then return end
-
-				if Input.UserInputType == Enum.UserInputType.MouseButton1 then
-					SliderElement.IsPressed = false
-
-					if SliderElement.IsHovered then
-						SkyUI:AnimateElement(SliderElement["se80"], {BackgroundColor3 = Color3.fromRGB(25, 25, 25)})
-						SkyUI:AnimateElement(SliderElement["sn84"], {TextTransparency = 0})
-						SkyUI:AnimateElement(SliderElement["sv85"], {TextTransparency = 0})
-						SkyUI:AnimateElement(SliderElement["st81"], {Transparency = 0.9})
-					else
-						SkyUI:AnimateElement(SliderElement["se80"], {BackgroundColor3 = Color3.fromRGB(25, 25, 25)})
-						SkyUI:AnimateElement(SliderElement["st81"], {Transparency = 0.96})
-					end
-
-					if SliderElement.Connection then
-						SliderElement.Connection:Disconnect()
-						SliderElement.Connection = nil
-					end
-				end
-			end)
-			
-			return SliderElement
-		end
-		
-		function Section:AddToggle(Options)
-			Options = SkyUI:CheckOptions({
-				Name = "Toggle",
-				Start = false,
-				Function = function(Value) print("The Value is "..Value.."!") end
-			}, Options)
-			
-			local ToggleElement = {
-				IsHovered = false,
-				IsPressed = false,
-				State = false
-			}
-			
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.ToggleElement
-			ToggleElement["te91"] = Instance.new("Frame", Section["sc47"]);
-			ToggleElement["te91"]["BorderSizePixel"] = 0;
-			ToggleElement["te91"]["BackgroundColor3"] = Color3.fromRGB(25, 25, 25);
-			ToggleElement["te91"]["Size"] = UDim2.new(1, 0, 0, 45);
-			ToggleElement["te91"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-			ToggleElement["te91"]["Name"] = [[ToggleElement]];
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.ToggleElement.UIStroke
-			ToggleElement["st92"] = Instance.new("UIStroke", ToggleElement["te91"]);
-			ToggleElement["st92"]["Transparency"] = 0.96;
-			ToggleElement["st92"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
-			ToggleElement["st92"]["Color"] = Color3.fromRGB(255, 255, 255);
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.ToggleElement.UIPadding
-			ToggleElement["p93"] = Instance.new("UIPadding", ToggleElement["te91"]);
-			ToggleElement["p93"]["PaddingTop"] = UDim.new(0, 8);
-			ToggleElement["p93"]["PaddingLeft"] = UDim.new(0, 12);
-			ToggleElement["p93"]["PaddingBottom"] = UDim.new(0, 8);
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.ToggleElement.UICorner
-			ToggleElement["c94"] = Instance.new("UICorner", ToggleElement["te91"]);
-			ToggleElement["c94"]["CornerRadius"] = UDim.new(0, 5);
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.ToggleElement.ToggleName
-			ToggleElement["tn95"] = Instance.new("TextLabel", ToggleElement["te91"]);
-			ToggleElement["tn95"]["BorderSizePixel"] = 0;
-			ToggleElement["tn95"]["TextXAlignment"] = Enum.TextXAlignment.Left;
-			ToggleElement["tn95"]["TextTransparency"] = 0.2;
-			ToggleElement["tn95"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-			ToggleElement["tn95"]["TextSize"] = 18;
-			ToggleElement["tn95"]["FontFace"] = Font.new([[rbxassetid://11702779517]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-			ToggleElement["tn95"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-			ToggleElement["tn95"]["BackgroundTransparency"] = 1;
-			ToggleElement["tn95"]["Size"] = UDim2.new(0.8, 0, 1, 0);
-			ToggleElement["tn95"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-			ToggleElement["tn95"]["Text"] = Options.Name;
-			ToggleElement["tn95"]["Name"] = [[ToggleName]];
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.ToggleElement.ToggleBox
-			ToggleElement["tb96"] = Instance.new("Frame", ToggleElement["te91"]);
-			ToggleElement["tb96"]["BorderSizePixel"] = 0;
-			ToggleElement["tb96"]["BackgroundColor3"] = Color3.fromRGB(31, 31, 31);
-			ToggleElement["tb96"]["AnchorPoint"] = Vector2.new(1, 0);
-			ToggleElement["tb96"]["Size"] = UDim2.new(0, 25, 0, 25);
-			ToggleElement["tb96"]["Position"] = UDim2.new(1, -8, 0, 2);
-			ToggleElement["tb96"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-			ToggleElement["tb96"]["Name"] = [[ToggleBox]];
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.ToggleElement.ToggleBox.UICorner
-			ToggleElement["c97"] = Instance.new("UICorner", ToggleElement["tb96"]);
-			ToggleElement["c97"]["CornerRadius"] = UDim.new(0, 5);
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.ToggleElement.ToggleBox.UIStroke
-			ToggleElement["st98"] = Instance.new("UIStroke", ToggleElement["tb96"]);
-			ToggleElement["st98"]["Transparency"] = 0.94;
-			ToggleElement["st98"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
-			ToggleElement["st98"]["Color"] = Color3.fromRGB(255, 255, 255);
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.ToggleElement.ToggleBox.ToggleMark
-			ToggleElement["tm99"] = Instance.new("ImageLabel", ToggleElement["tb96"]);
-			ToggleElement["tm99"]["BorderSizePixel"] = 0;
-			ToggleElement["tm99"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-			ToggleElement["tm99"]["ImageTransparency"] = 1;
-			ToggleElement["tm99"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
-			ToggleElement["tm99"]["Image"] = [[rbxassetid://18837414354]];
-			ToggleElement["tm99"]["Size"] = UDim2.new(1, -5, 1, -5);
-			ToggleElement["tm99"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-			ToggleElement["tm99"]["BackgroundTransparency"] = 1;
-			ToggleElement["tm99"]["Name"] = [[ToggleMark]];
-			ToggleElement["tm99"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
-			
-			function ToggleElement:SetName(Name)
-				ToggleElement["tn95"]["Text"] = Name
-			end
-			
-			function ToggleElement:SetFunction(Func)
-				Options.Function = Func
-			end
-			
-			function ToggleElement:SetState(State)
-				ToggleElement.State = State
-				
-				if State == true then
-					SkyUI:AnimateElement(ToggleElement["tb96"], {BackgroundColor3 = Color3.fromRGB(0, 154, 255)})
-					SkyUI:AnimateElement(ToggleElement["tm99"], {ImageTransparency = 0})
-				else
-					SkyUI:AnimateElement(ToggleElement["tb96"], {BackgroundColor3 = Color3.fromRGB(31, 31, 31)})
-					SkyUI:AnimateElement(ToggleElement["tm99"], {ImageTransparency = 1})
-				end
-			end
-			
-			ToggleElement:SetState(Options.Start)
-			
-			ToggleElement["te91"].MouseEnter:Connect(function()
-				ToggleElement.IsHovered = true
-				SkyUI:AnimateElement(ToggleElement["tn95"], {TextTransparency = 0})
-				SkyUI:AnimateElement(ToggleElement["st92"], {Transparency = 0.9})
-			end)
-
-			ToggleElement["te91"].MouseLeave:Connect(function()
-				ToggleElement.IsHovered = false
-
-				if not ToggleElement.IsPressed then
-					SkyUI:AnimateElement(ToggleElement["tn95"], {TextTransparency = 0.2})
-					SkyUI:AnimateElement(ToggleElement["st92"], {Transparency = 0.96})
-				end
-			end)
-
-			ToggleElement["te91"].InputBegan:Connect(function(Input, GPE)
-				if GPE then return end
-
-				if Input.UserInputType == Enum.UserInputType.MouseButton1 and ToggleElement.IsHovered then
-					ToggleElement.IsPressed = true
-					
-					if ToggleElement.State then
-						ToggleElement:SetState(false)
-					else
-						ToggleElement:SetState(true)
-					end
-					
-					SkyUI:AnimateElement(ToggleElement["te91"], {BackgroundColor3 = Color3.fromRGB(28, 28, 28)})
-					SkyUI:AnimateElement(ToggleElement["st92"], {Transparency = 0.9})
-					Options.Function(ToggleElement.State)
-				end
-			end)
-
-			ToggleElement["te91"].InputEnded:Connect(function(Input, GPE)
-				if GPE then return end
-
-				if Input.UserInputType == Enum.UserInputType.MouseButton1 then
-					ToggleElement.IsPressed = false
-
-					if ToggleElement.IsHovered then
-						SkyUI:AnimateElement(ToggleElement["te91"], {BackgroundColor3 = Color3.fromRGB(25, 25, 25)})
-						SkyUI:AnimateElement(ToggleElement["tn95"], {TextTransparency = 0})
-						SkyUI:AnimateElement(ToggleElement["st92"], {Transparency = 0.9})
-					else
-						SkyUI:AnimateElement(ToggleElement["te91"], {BackgroundColor3 = Color3.fromRGB(25, 25, 25)})
-						SkyUI:AnimateElement(ToggleElement["st92"], {Transparency = 0.96})
-					end
-				end
-			end)
-			
-			return ToggleElement
-		end
-		
-		function Section:AddDropdown(Options)
-			Options = SkyUI:CheckOptions({
-				Name = "Dropdown",
-				Choices = {"Choice 1", "Choice 2"},
-				Start = false,
-				Function = function(Value) print("The Value is "..Value.."!") end
-			}, Options)
-			
-			local DropdownElement = {
-				IsHovered = false,
-				IsPressed = false,
-				IsOpen = false,
-				SelectedChoice = nil,
-				Choices = {},
-			}
-			
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.DropdownElement
-			DropdownElement["de100"] = Instance.new("Frame", Section["sc47"]);
-			DropdownElement["de100"]["BorderSizePixel"] = 0;
-			DropdownElement["de100"]["BackgroundColor3"] = Color3.fromRGB(25, 25, 25);
-			DropdownElement["de100"]["ClipsDescendants"] = true;
-			DropdownElement["de100"]["Size"] = UDim2.new(1, 0, 0, 45);
-			DropdownElement["de100"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-			DropdownElement["de100"]["Name"] = [[DropdownElement]];
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.DropdownElement.UIStroke
-			DropdownElement["st101"] = Instance.new("UIStroke", DropdownElement["de100"]);
-			DropdownElement["st101"]["Transparency"] = 0.96;
-			DropdownElement["st101"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
-			DropdownElement["st101"]["Color"] = Color3.fromRGB(255, 255, 255);
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.DropdownElement.UIPadding
-			DropdownElement["p102"] = Instance.new("UIPadding", DropdownElement["de100"]);
-			DropdownElement["p102"]["PaddingTop"] = UDim.new(0, 8);
-			DropdownElement["p102"]["PaddingLeft"] = UDim.new(0, 12);
-			DropdownElement["p102"]["PaddingBottom"] = UDim.new(0, 8);
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.DropdownElement.UICorner
-			DropdownElement["c103"] = Instance.new("UICorner", DropdownElement["de100"]);
-			DropdownElement["c103"]["CornerRadius"] = UDim.new(0, 5);
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.DropdownElement.DropdownIcon
-			DropdownElement["di104"] = Instance.new("ImageLabel", DropdownElement["de100"]);
-			DropdownElement["di104"]["BorderSizePixel"] = 0;
-			DropdownElement["di104"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-			DropdownElement["di104"]["ImageTransparency"] = 0.3;
-			DropdownElement["di104"]["AnchorPoint"] = Vector2.new(1, 0);
-			DropdownElement["di104"]["Image"] = [[rbxassetid://18824644623]];
-			DropdownElement["di104"]["Size"] = UDim2.new(0, 25, 0, 25);
-			DropdownElement["di104"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-			DropdownElement["di104"]["BackgroundTransparency"] = 1;
-			DropdownElement["di104"]["Name"] = [[DropdownIcon]];
-			DropdownElement["di104"]["Position"] = UDim2.new(1, -8, 0, 2);
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.DropdownElement.DropdownName
-			DropdownElement["dn105"] = Instance.new("TextLabel", DropdownElement["de100"]);
-			DropdownElement["dn105"]["BorderSizePixel"] = 0;
-			DropdownElement["dn105"]["TextXAlignment"] = Enum.TextXAlignment.Left;
-			DropdownElement["dn105"]["TextTransparency"] = 0.2;
-			DropdownElement["dn105"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-			DropdownElement["dn105"]["TextSize"] = 18;
-			DropdownElement["dn105"]["FontFace"] = Font.new([[rbxassetid://11702779517]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-			DropdownElement["dn105"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-			DropdownElement["dn105"]["BackgroundTransparency"] = 1;
-			DropdownElement["dn105"]["Size"] = UDim2.new(0.85, 0, 0, 29);
-			DropdownElement["dn105"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-			DropdownElement["dn105"]["Text"] = Options.Name;
-			DropdownElement["dn105"]["Name"] = [[DropdownName]];
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.DropdownElement.DropdownChoices
-			DropdownElement["dc106"] = Instance.new("Frame", DropdownElement["de100"]);
-			DropdownElement["dc106"]["Visible"] = false;
-			DropdownElement["dc106"]["BorderSizePixel"] = 0;
-			DropdownElement["dc106"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-			DropdownElement["dc106"]["Size"] = UDim2.new(1, -12, 1, -36);
-			DropdownElement["dc106"]["Position"] = UDim2.new(0, 0, 0, 32);
-			DropdownElement["dc106"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-			DropdownElement["dc106"]["Name"] = [[DropdownChoices]];
-			DropdownElement["dc106"]["BackgroundTransparency"] = 1;
-			
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.DropdownElement.DropdownChoices.UIPadding
-			DropdownElement["p107"] = Instance.new("UIPadding", DropdownElement["dc106"]);
-			DropdownElement["p107"]["PaddingTop"] = UDim.new(0, 2);
-			DropdownElement["p107"]["PaddingLeft"] = UDim.new(0, 2);
-			DropdownElement["p107"]["PaddingRight"] = UDim.new(0, -8);
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.DropdownElement.DropdownChoices.UIListLayout
-			DropdownElement["l108"] = Instance.new("UIListLayout", DropdownElement["dc106"]);
-			DropdownElement["l108"]["Padding"] = UDim.new(0, 5);
-			DropdownElement["l108"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
-			
-			function DropdownElement:AddChoice(Value)
-				local ChoiceID = HTTPService:GenerateGUID(false)
-				
-				if DropdownElement.Choices[ChoiceID] ~= nil then
-					return
-				end
-				
-				DropdownElement.Choices[ChoiceID] = {
-					Element = {},
-					Value = Value
+				local finalColorHSV = Color3.fromHSV(currentHue, currentSaturation, currentValue)
+				local finalColorRGB = Color3.fromRGB(
+					math.floor((finalColorHSV.R * 255) + 0.5),
+					math.floor((finalColorHSV.G * 255) + 0.5),
+					math.floor((finalColorHSV.B * 255) + 0.5)
+				)
+
+				selectionFrame.BackgroundColor3 = finalColorRGB
+				UIGradient.Color = ColorSequence.new{
+					ColorSequenceKeypoint.new(0.00, Color3.fromHSV(currentHue, currentSaturation, 1)),
+					ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 0, 0))
 				}
-				
-				-- StarterGui.SkyUI.MainFrame.Content.SectionContent.DropdownElement.DropdownChoices.ChoiceItem
-				DropdownElement.Choices[ChoiceID].Element["ci109"] = Instance.new("TextLabel", DropdownElement["dc106"]);
-				DropdownElement.Choices[ChoiceID].Element["ci109"]["BorderSizePixel"] = 0;
-				DropdownElement.Choices[ChoiceID].Element["ci109"]["TextTransparency"] = 0.24;
-				DropdownElement.Choices[ChoiceID].Element["ci109"]["BackgroundColor3"] = Color3.fromRGB(27, 27, 27);
-				DropdownElement.Choices[ChoiceID].Element["ci109"]["TextSize"] = 14;
-				DropdownElement.Choices[ChoiceID].Element["ci109"]["FontFace"] = Font.new([[rbxassetid://11702779517]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-				DropdownElement.Choices[ChoiceID].Element["ci109"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-				DropdownElement.Choices[ChoiceID].Element["ci109"]["Size"] = UDim2.new(1, -10, 0, 20);
-				DropdownElement.Choices[ChoiceID].Element["ci109"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-				DropdownElement.Choices[ChoiceID].Element["ci109"]["Text"] = Value;
-				DropdownElement.Choices[ChoiceID].Element["ci109"]["Name"] = [[ChoiceItem]];
 
-				-- StarterGui.SkyUI.MainFrame.Content.SectionContent.DropdownElement.DropdownChoices.ChoiceItem.UICorner
-				DropdownElement.Choices[ChoiceID].Element["c110"] = Instance.new("UICorner", DropdownElement.Choices[ChoiceID].Element["ci109"]);
-				DropdownElement.Choices[ChoiceID].Element["c110"]["CornerRadius"] = UDim.new(0, 5);
+				RGB_Box.Text = string.format("%d, %d, %d", finalColorRGB.R * 255, finalColorRGB.G * 255, finalColorRGB.B * 255)
+				HSV_Box.Text = string.format("%.3f, %.3f, %.3f", currentHue, currentSaturation, currentValue)
 
-				-- StarterGui.SkyUI.MainFrame.Content.SectionContent.DropdownElement.DropdownChoices.ChoiceItem.UIStroke
-				DropdownElement.Choices[ChoiceID].Element["st111"] = Instance.new("UIStroke", DropdownElement.Choices[ChoiceID].Element["ci109"]);
-				DropdownElement.Choices[ChoiceID].Element["st111"]["Enabled"] = false;
-				DropdownElement.Choices[ChoiceID].Element["st111"]["Transparency"] = 0.96;
-				DropdownElement.Choices[ChoiceID].Element["st111"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
-				DropdownElement.Choices[ChoiceID].Element["st111"]["Color"] = Color3.fromRGB(255, 255, 255);
-				
-				if Options.Start ~= false and Options.Start == Value then
-					DropdownElement.SelectedChoice = ChoiceID
-					DropdownElement["dn105"]["Text"] = Options.Name.." ("..Value..")"
-					DropdownElement.Choices[ChoiceID].Element["ci109"]["TextTransparency"] = 0.2;
-					DropdownElement.Choices[ChoiceID].Element["ci109"]["BackgroundColor3"] = Color3.fromRGB(31, 31, 31);
-					DropdownElement.Choices[ChoiceID].Element["st111"]["Enabled"] = true
+				args.Callback(finalColorRGB)
+			end
+		end)
+
+		addConnection(Continue.MouseButton1Click,function() 
+			local outroTween = game:GetService("TweenService"):Create(PlayerDropdownMenu, TweenInfo.new(.5, Enum.EasingStyle.Cubic, Enum.EasingDirection.In), {Position = UDim2.new(-1.1, 0, -0.0032258064, 0)})
+			outroTween:Play()
+			outroTween.Completed:Wait()
+			PlayerDropdownMenu:Destroy()
+		end)
+	end
+
+	addConnection(ImageButton.MouseButton1Click, function()
+		popupMenu()
+	end)
+end
+function thisTab:CreateBind(args)
+	args.Text = args.Text or "Keybind"
+	args.Default = args.Default or Enum.KeyCode.F
+	args.Hold = args.Hold or false
+	args.CallBack = args.CallBack or function() end
+
+	local Dropdown = Instance.new("Frame")
+	local UICorner = Instance.new("UICorner")
+	local Text = Instance.new("TextLabel")
+	local ImageButton = Instance.new("ImageButton")
+	local KeybindText = Instance.new("TextLabel")
+	local UICorner_2 = Instance.new("UICorner")
+
+	Dropdown.Name = tabName.."_Dropdown"
+	Dropdown.Parent = TabContentsFrame
+	Dropdown.BackgroundColor3 = Color3.fromRGB(17, 18, 22)
+	Dropdown.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Dropdown.BorderSizePixel = 0
+	Dropdown.Position = UDim2.new(0, 0, 0.383512557, 0)
+	Dropdown.Size = UDim2.new(0, 423, 0, 31)
+	Dropdown.Visible = false
+
+	UICorner.CornerRadius = UDim.new(0, 6)
+	UICorner.Parent = Dropdown
+
+	Text.Name = "Text"
+	Text.Parent = Dropdown
+	Text.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Text.BackgroundTransparency = 1.000
+	Text.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Text.BorderSizePixel = 0
+	Text.Position = UDim2.new(0.0283687934, 0, 0, 0)
+	Text.Size = UDim2.new(0.482269496, 0, 1, 0)
+	Text.FontFace = defaultFont
+	Text.Text = args.Text
+	Text.TextColor3 = Color3.fromRGB(193, 193, 193)
+	Text.TextSize = 21.000
+	Text.TextWrapped = true
+	Text.TextXAlignment = Enum.TextXAlignment.Left
+
+	ImageButton.Parent = Dropdown
+	ImageButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	ImageButton.BackgroundTransparency = 1.000
+	ImageButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	ImageButton.BorderSizePixel = 0
+	ImageButton.Size = UDim2.new(1, 0, 1, 0)
+
+	KeybindText.Name = "KeybindText"
+	KeybindText.Parent = Dropdown
+	KeybindText.AnchorPoint = Vector2.new(0.5, 0.5)
+	KeybindText.BackgroundColor3 = Color3.fromRGB(24, 25, 30)
+	KeybindText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	KeybindText.BorderSizePixel = 0
+	KeybindText.Position = UDim2.new(0.741725743, 0, 0.5, 0)
+	KeybindText.Size = UDim2.new(0.471631169, 0, 0.774193525, 0)
+	KeybindText.FontFace = defaultFont
+	KeybindText.Text = game:GetService("UserInputService"):GetStringForKeyCode(args.Default)
+	KeybindText.TextColor3 = Color3.fromRGB(193, 193, 193)
+	KeybindText.TextSize = 21.000
+	KeybindText.TextWrapped = true
+	KeybindText.ZIndex = 0
+	UICorner_2.Parent = KeybindText
+
+	assignClickAnimation(ImageButton)
+	local awaitingInput = false
+	local inputKey = args.Default
+	addConnection(ImageButton.MouseButton1Click,function() 
+		KeybindText.Text = "Awaiting Input.."
+		awaitingInput = true
+	end)
+	addConnection(game:GetService("UserInputService").InputBegan,function(input: InputObject) 
+		if awaitingInput then
+			inputKey = input.KeyCode
+			awaitingInput = false	
+			local bindName = game:GetService("UserInputService"):GetStringForKeyCode(input.KeyCode)
+			KeybindText.Text = bindName
+			if bindName == '' then
+				local thingy = tostring(input.UserInputType)
+										local finalThingy = string.sub(tostring(input.UserInputType), string.find(thingy, "%.") + 1)
+				if finalThingy == '' then
+					finalThingy = "[ Cannot display ]"
 				end
-				
-				DropdownElement.Choices[ChoiceID].Element["ci109"].MouseEnter:Connect(function()
-					DropdownElement.IsHovered = true
-					SkyUI:AnimateElement(DropdownElement.Choices[ChoiceID].Element["ci109"], {TextTransparency = 0.2})
-				end)
-
-				DropdownElement.Choices[ChoiceID].Element["ci109"].MouseLeave:Connect(function()
-					DropdownElement.IsHovered = false
-
-					if not DropdownElement.IsPressed then
-						SkyUI:AnimateElement(DropdownElement.Choices[ChoiceID].Element["ci109"], {TextTransparency = 0.24})
-					end
-				end)
-
-				DropdownElement.Choices[ChoiceID].Element["ci109"].InputBegan:Connect(function(Input, GPE)
-					if GPE then return end
-
-					if Input.UserInputType == Enum.UserInputType.MouseButton1 and DropdownElement.IsHovered then
-						DropdownElement.IsPressed = true
-						
-						if DropdownElement.SelectedChoice ~= nil then
-							DropdownElement.Choices[DropdownElement.SelectedChoice].Element["ci109"]["TextTransparency"] = 0.24;
-							DropdownElement.Choices[DropdownElement.SelectedChoice].Element["ci109"]["BackgroundColor3"] = Color3.fromRGB(27, 27, 27);
-							DropdownElement.Choices[DropdownElement.SelectedChoice].Element["st111"]["Enabled"] = false
-						end
-						
-						DropdownElement.SelectedChoice = ChoiceID
-						DropdownElement.Choices[ChoiceID].Element["ci109"]["TextTransparency"] = 0.2;
-						DropdownElement.Choices[ChoiceID].Element["ci109"]["BackgroundColor3"] = Color3.fromRGB(31, 31, 31);
-						DropdownElement.Choices[ChoiceID].Element["st111"]["Enabled"] = true
-						DropdownElement["dn105"]["Text"] = Options.Name.." ("..Value..")"
-						DropdownElement:_ToggleDropdown()
-						Options.Function(Value)
-					end
-				end)
-
-				DropdownElement.Choices[ChoiceID].Element["ci109"].InputEnded:Connect(function(Input, GPE)
-					if GPE then return end
-
-					if Input.UserInputType == Enum.UserInputType.MouseButton1 then
-						DropdownElement.IsPressed = false
-						DropdownElement:_ToggleDropdown()
-						
-						if DropdownElement.IsHovered then
-							SkyUI:AnimateElement(DropdownElement.Choices[ChoiceID].Element["ci109"], {TextTransparency = 0.2})
-						else
-							SkyUI:AnimateElement(DropdownElement.Choices[ChoiceID].Element["ci109"], {TextTransparency = 0.24})
-						end
-					end
-				end)
+				KeybindText.Text = finalThingy
 			end
-			
-			function DropdownElement:RemoveChoice(Value)
-				local ChoiceID = nil
-				local ChoiceData = nil
-				
-				for Index, Choice in pairs(DropdownElement.Choices) do
-					if Choice.Value == Value then
-						ChoiceID = Index
-						ChoiceData = Choice
-						break
-					end
-				end
-
-				if ChoiceID and ChoiceData then
-					ChoiceData.Element["ci109"]:Destroy()
-					DropdownElement.Choices[ChoiceID] = nil
-				end
-			end
-			
-			function DropdownElement:ClearChoices(Choices)
-				for Index, Choice in pairs(DropdownElement.Choices) do
-					DropdownElement:RemoveChoice(Choice.Value)
-				end
-			end
-			
-			function DropdownElement:SetName(Name)
-				DropdownElement["dn105"]["Text"] = Name
-			end
-			
-			function DropdownElement:SetFunction(Func)
-				Options.Function = Func
-			end
-			
-			function DropdownElement:_ToggleDropdown()
-				if DropdownElement.IsOpen then
-					DropdownElement.IsOpen = false
-					DropdownElement["dc106"].Visible = false
-					SkyUI:AnimateElement(DropdownElement["de100"], {Size = UDim2.new(1, 0, 0, 45)})
+		else
+			if input.KeyCode == inputKey then
+				if args.Hold == true then
+					args.CallBack(true)
 				else
-					DropdownElement.IsOpen = true
-					local ChoiceCount = 0
-					
-					for Index, Choice in pairs(DropdownElement.Choices) do
-						if Choice ~= nil then
-							ChoiceCount += 1
-						end
-					end
-					
-					if ChoiceCount == 0 then
-						return
-					end
-					
-					DropdownElement["dc106"].Visible = true
-					SkyUI:AnimateElement(DropdownElement["de100"], {Size = UDim2.new(1, 0, 0, (45 + (20 * ChoiceCount) + 14))})
+					args.CallBack()
 				end
 			end
-			
-			for _, Value in pairs(Options.Choices) do
-				DropdownElement:AddChoice(Value)
-			end
-			
-			DropdownElement["de100"].MouseEnter:Connect(function()
-				DropdownElement.IsHovered = true
-				SkyUI:AnimateElement(DropdownElement["di104"], {ImageTransparency = 0})
-				SkyUI:AnimateElement(DropdownElement["dn105"], {TextTransparency = 0})
-				SkyUI:AnimateElement(DropdownElement["st101"], {Transparency = 0.9})
-			end)
-
-			DropdownElement["de100"].MouseLeave:Connect(function()
-				DropdownElement.IsHovered = false
-
-				if not DropdownElement.IsPressed then
-					SkyUI:AnimateElement(DropdownElement["di104"], {ImageTransparency = 0.3})
-					SkyUI:AnimateElement(DropdownElement["dn105"], {TextTransparency = 0.2})
-					SkyUI:AnimateElement(DropdownElement["st101"], {Transparency = 0.96})
-				end
-			end)
-
-			DropdownElement["de100"].InputBegan:Connect(function(Input, GPE)
-				if GPE then return end
-
-				if Input.UserInputType == Enum.UserInputType.MouseButton1 and DropdownElement.IsHovered then
-					DropdownElement.IsPressed = true
-					SkyUI:AnimateElement(DropdownElement["de100"], {BackgroundColor3 = Color3.fromRGB(28, 28, 28)})
-					SkyUI:AnimateElement(DropdownElement["st101"], {Transparency = 0.9})
-					DropdownElement:_ToggleDropdown()
-				end
-			end)
-
-			DropdownElement["de100"].InputEnded:Connect(function(Input, GPE)
-				if GPE then return end
-
-				if Input.UserInputType == Enum.UserInputType.MouseButton1 then
-					DropdownElement.IsPressed = false
-
-					if DropdownElement.IsHovered then
-						SkyUI:AnimateElement(DropdownElement["de100"], {BackgroundColor3 = Color3.fromRGB(25, 25, 25)})
-						SkyUI:AnimateElement(DropdownElement["di104"], {ImageTransparency = 0})
-						SkyUI:AnimateElement(DropdownElement["dn105"], {TextTransparency = 0})
-						SkyUI:AnimateElement(DropdownElement["st101"], {Transparency = 0.9})
-					else
-						SkyUI:AnimateElement(DropdownElement["de100"], {BackgroundColor3 = Color3.fromRGB(25, 25, 25)})
-						SkyUI:AnimateElement(DropdownElement["st101"], {Transparency = 0.96})
-					end
-				end
-			end)
-			
-			return DropdownElement
 		end
-		
-		function Section:AddInput(Options)
-			Options = SkyUI:CheckOptions({
-				Name = "Input",
-				Start = false,
-				Function = function(Value)
-					print("The Value is "..Value.."!")
-				end,
-			}, Options)
-			
-			local InputElement = {
-				IsHovered = false,
-				IsPressed = false,
-				TextContent = nil
-			}
-			
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.InputElement
-			InputElement["ie112"] = Instance.new("Frame", Section["sc47"]);
-			InputElement["ie112"]["BorderSizePixel"] = 0;
-			InputElement["ie112"]["BackgroundColor3"] = Color3.fromRGB(25, 25, 25);
-			InputElement["ie112"]["Size"] = UDim2.new(1, 0, 0, 45);
-			InputElement["ie112"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-			InputElement["ie112"]["Name"] = [[InputElement]];
 
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.InputElement.UIStroke
-			InputElement["st113"] = Instance.new("UIStroke", InputElement["ie112"]);
-			InputElement["st113"]["Transparency"] = 0.96;
-			InputElement["st113"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
-			InputElement["st113"]["Color"] = Color3.fromRGB(255, 255, 255);
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.InputElement.UIPadding
-			InputElement["p114"] = Instance.new("UIPadding", InputElement["ie112"]);
-			InputElement["p114"]["PaddingTop"] = UDim.new(0, 8);
-			InputElement["p114"]["PaddingLeft"] = UDim.new(0, 12);
-			InputElement["p114"]["PaddingBottom"] = UDim.new(0, 8);
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.InputElement.UICorner
-			InputElement["c115"] = Instance.new("UICorner", InputElement["ie112"]);
-			InputElement["c115"]["CornerRadius"] = UDim.new(0, 5);
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.InputElement.InputName
-			InputElement["in116"] = Instance.new("TextLabel", InputElement["ie112"]);
-			InputElement["in116"]["BorderSizePixel"] = 0;
-			InputElement["in116"]["TextXAlignment"] = Enum.TextXAlignment.Left;
-			InputElement["in116"]["TextTransparency"] = 0.2;
-			InputElement["in116"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-			InputElement["in116"]["TextSize"] = 18;
-			InputElement["in116"]["FontFace"] = Font.new([[rbxassetid://11702779517]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-			InputElement["in116"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-			InputElement["in116"]["BackgroundTransparency"] = 1;
-			InputElement["in116"]["Size"] = UDim2.new(0.85, 0, 1, 0);
-			InputElement["in116"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-			InputElement["in116"]["Text"] = Options.Name;
-			InputElement["in116"]["Name"] = [[InputName]];
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.InputElement.InputBox
-			InputElement["ib117"] = Instance.new("TextBox", InputElement["ie112"]);
-			InputElement["ib117"]["CursorPosition"] = -1;
-			InputElement["ib117"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-			InputElement["ib117"]["PlaceholderColor3"] = Color3.fromRGB(255, 255, 255);
-			InputElement["ib117"]["BorderSizePixel"] = 0;
-			InputElement["ib117"]["TextTransparency"] = 0.2;
-			InputElement["ib117"]["TextSize"] = 14;
-			InputElement["ib117"]["BackgroundColor3"] = Color3.fromRGB(31, 31, 31);
-			InputElement["ib117"]["FontFace"] = Font.new([[rbxassetid://11702779517]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-			InputElement["ib117"]["AnchorPoint"] = Vector2.new(1, 0);
-			InputElement["ib117"]["PlaceholderText"] = [[Text]];
-			InputElement["ib117"]["Size"] = UDim2.new(0, 42, 0, 25);
-			InputElement["ib117"]["Position"] = UDim2.new(1, -8, 0, 2);
-			InputElement["ib117"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-			InputElement["ib117"]["Text"] = [[]];
-			InputElement["ib117"]["AutomaticSize"] = Enum.AutomaticSize.X;
-			
-			InputElement["p118"] = Instance.new("UIPadding", InputElement["ib117"])
-			InputElement["p118"]["PaddingLeft"] = UDim.new(0, 8)
-			InputElement["p118"]["PaddingRight"] = UDim.new(0, 8)
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.InputElement.InputBox.UIStroke
-			InputElement["st119"] = Instance.new("UIStroke", InputElement["ib117"]);
-			InputElement["st119"]["Transparency"] = 0.96;
-			InputElement["st119"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
-			InputElement["st119"]["Color"] = Color3.fromRGB(255, 255, 255);
-
-			-- StarterGui.SkyUI.MainFrame.Content.SectionContent.InputElement.InputBox.UICorner
-			InputElement["c120"] = Instance.new("UICorner", InputElement["ib117"]);
-			InputElement["c120"]["CornerRadius"] = UDim.new(0, 5);
-			
-			if Options.Start ~= false then
-				InputElement["ib117"]["Text"] = Options.Start
-			end
-			
-			function InputElement:SetFunction(Func)
-				Options.Function = Func
-			end
-			
-			function InputElement:SetName(Name)
-				InputElement["in116"]["Text"] = Name
-			end
-			
-			function InputElement:SetText(Text)
-				InputElement["ib117"]["Text"] = Text
-			end
-			
-			function InputElement:GetText()
-				return InputElement["ib117"]["Text"]
-			end
-			
-			InputElement["ie112"].MouseEnter:Connect(function()
-				InputElement.IsHovered = true
-				SkyUI:AnimateElement(InputElement["in116"], {TextTransparency = 0})
-				SkyUI:AnimateElement(InputElement["st113"], {Transparency = 0.9})
-			end)
-
-			InputElement["ie112"].MouseLeave:Connect(function()
-				InputElement.IsHovered = false
-
-				if not InputElement.IsPressed then
-					SkyUI:AnimateElement(InputElement["in116"], {TextTransparency = 0.2})
-					SkyUI:AnimateElement(InputElement["st113"], {Transparency = 0.96})
-				end
-			end)
-
-			InputElement["ie112"].InputBegan:Connect(function(Input_, GPE)
-				if GPE then return end
-
-				if Input_.UserInputType == Enum.UserInputType.MouseButton1 and InputElement.IsHovered then
-					InputElement.IsPressed = true
-					SkyUI:AnimateElement(InputElement["ie112"], {BackgroundColor3 = Color3.fromRGB(28, 28, 28)})
-					SkyUI:AnimateElement(InputElement["st113"], {Transparency = 0.9})
-				end
-			end)
-
-			InputElement["ie112"].InputEnded:Connect(function(Input_, GPE)
-				if GPE then return end
-
-				if Input_.UserInputType == Enum.UserInputType.MouseButton1 then
-					InputElement.IsPressed = false
-
-					if InputElement.IsHovered then
-						SkyUI:AnimateElement(InputElement["ie112"], {BackgroundColor3 = Color3.fromRGB(25, 25, 25)})
-						SkyUI:AnimateElement(InputElement["in116"], {TextTransparency = 0})
-						SkyUI:AnimateElement(InputElement["st113"], {Transparency = 0.9})
-					else
-						SkyUI:AnimateElement(InputElement["ie112"], {BackgroundColor3 = Color3.fromRGB(25, 25, 25)})
-						SkyUI:AnimateElement(InputElement["st113"], {Transparency = 0.96})
-					end
-				end
-			end) 
-
-			InputElement["ib117"]:GetPropertyChangedSignal("Text"):Connect(function()
-				Options.Function(InputElement["ib117"]["Text"])
-			end)
-			
-			return InputElement
+	end)
+	addConnection(game:GetService("UserInputService").InputEnded,function(input: InputObject) 
+		if args.Hold and input.KeyCode == inputKey then
+			args.CallBack(false)
 		end
-		
-		return Section
-	end
-	
-	function Interface:SetScale(ScaleValue)
-		SkyUI:AnimateElement(Interface["scale1"], {Scale = ScaleValue})
-	end
-	
-	function Interface:Remove()
-		SkyUI:AnimateElement(Interface["scale1"], {Scale = 0.8})
-		wait(0.1)
-		Interface["g1"]:Destroy()
+	end)
+end
+function thisTab:CreateBox(args)
+	args.Text = args.Text or "Text Box"
+	args.Placeholder = args.Placeholder or "Enter text..."
+	args.Default = args.Default or ""
+	args.Callback = args.Callback or function() end
+
+	table.insert(self.Contents.Objects, {
+		ObjectType = 'Box',
+		Text = args.Text,
+		Placeholder = args.Placeholder,
+		Default = args.Default,
+		Callback = args.Callback
+	})
+
+	local TextBox = Instance.new("Frame")
+	local UICorner = Instance.new("UICorner")
+	local TextLabel = Instance.new("TextLabel")
+	local InputFrame = Instance.new("Frame")
+	local UICorner_2 = Instance.new("UICorner")
+	local TextBoxInput = Instance.new("TextBox")
+	local UIStroke = Instance.new("UIStroke")
+
+	TextBox.Name = tabName.."_TextBox"
+	TextBox.Parent = TabContentsFrame
+	TextBox.BackgroundColor3 = Color3.fromRGB(17, 18, 22)
+	TextBox.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	TextBox.BorderSizePixel = 0
+	TextBox.Position = UDim2.new(0, 0, 0.383512557, 0)
+	TextBox.Size = UDim2.new(0, 423, 0, 60)
+	TextBox.Visible = false
+
+	UICorner.CornerRadius = UDim.new(0, 6)
+	UICorner.Parent = TextBox
+
+	TextLabel.Name = "TextLabel"
+	TextLabel.Parent = TextBox
+	TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			TextLabel.BackgroundTransparency = 1.000
+			TextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			TextLabel.BorderSizePixel = 0
+			TextLabel.Position = UDim2.new(0.0283687934, 0, 0, 0)
+			TextLabel.Size = UDim2.new(0.482269496, 0, 0.5, 0)
+			TextLabel.FontFace = defaultFont
+			TextLabel.Text = args.Text
+			TextLabel.TextColor3 = Color3.fromRGB(193, 193, 193)
+			TextLabel.TextSize = 21.000
+			TextLabel.TextWrapped = true
+			TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+			InputFrame.Name = "InputFrame"
+			InputFrame.Parent = TextBox
+			InputFrame.BackgroundColor3 = Color3.fromRGB(28, 29, 35)
+			InputFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			InputFrame.BorderSizePixel = 0
+			InputFrame.Position = UDim2.new(0.0283687934, 0, 0.5, 0)
+			InputFrame.Size = UDim2.new(0.94, 0, 0.4, 0)
+
+			UICorner_2.CornerRadius = UDim.new(0, 4)
+			UICorner_2.Parent = InputFrame
+
+			TextBoxInput.Name = "TextBoxInput"
+			TextBoxInput.Parent = InputFrame
+			TextBoxInput.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			TextBoxInput.BackgroundTransparency = 1.000
+			TextBoxInput.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			TextBoxInput.BorderSizePixel = 0
+			TextBoxInput.Position = UDim2.new(0.02, 0, 0, 0)
+			TextBoxInput.Size = UDim2.new(0.96, 0, 1, 0)
+			TextBoxInput.FontFace = defaultFont
+			TextBoxInput.PlaceholderText = args.Placeholder
+			TextBoxInput.Text = args.Default
+			TextBoxInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+			TextBoxInput.TextSize = 18.000
+			TextBoxInput.TextXAlignment = Enum.TextXAlignment.Left
+			TextBoxInput.ClearTextOnFocus = false
+
+			UIStroke.Parent = InputFrame
+			UIStroke.Color = setHueAndSaturation(ConfigArgs.AccentColor3, 0.5, 0.8)
+			UIStroke.Thickness = 1.5
+
+			-- Focus effects
+			TextBoxInput.Focused:Connect(function()
+				game:GetService("TweenService"):Create(UIStroke, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+					Thickness = 2.5,
+					Color = ConfigArgs.AccentColor3
+				}):Play()
+			end)
+
+			TextBoxInput.FocusLost:Connect(function(enterPressed)
+				game:GetService("TweenService"):Create(UIStroke, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+					Thickness = 1.5,
+					Color = setHueAndSaturation(ConfigArgs.AccentColor3, 0.5, 0.8)
+				}):Play()
+				
+				if enterPressed then
+					args.Callback(TextBoxInput.Text)
+				end
+			end)
+
+			local box = {}
+			function box:Set(text)
+				TextBoxInput.Text = text
+				args.Callback(text)
+			end
+			function box:Get()
+				return TextBoxInput.Text
+			end
+			
+			return box
+		end
+		return thisTab
 	end
 
-	return Interface
+	local settingsOpen = false
+
+	local function loadSettings(load)
+		for i,v in pairs(ScrollingFrame555:GetChildren()) do
+			if v:IsA("Frame") then
+				wait(.1)
+				v.Visible = load
+				print(v.Name)	
+			end
+		end
+	end
+
+	local function createSetting(text,default,callback)
+		local Frame = Instance.new("Frame")
+		local UICorner = Instance.new("UICorner")
+		local TextLabel = Instance.new("TextLabel")
+		local animframe = Instance.new("Frame")
+		local UICorner_2 = Instance.new("UICorner")
+		local ImageButton = Instance.new("ImageButton")
+		local UIPadding = Instance.new("UIPadding")
+		SettingsPanel.ClipsDescendants = true
+
+		Frame.Parent = ScrollingFrame555 
+		Frame.BackgroundColor3 = Color3.fromRGB(9, 10, 12)
+		Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		Frame.BorderSizePixel = 0
+		Frame.Size = UDim2.new(1, -10, 0.065,0)
+		Frame.Visible = false
+
+		UICorner.Parent = Frame
+
+		TextLabel.Parent = Frame
+		TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		TextLabel.BackgroundTransparency = 1.000
+		TextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		TextLabel.BorderSizePixel = 0
+		TextLabel.Position = UDim2.new(0.0689678416, 0, 0.158339262, 0)
+		TextLabel.Size = UDim2.new(0, 185, 0, 25)
+		TextLabel.FontFace = defaultFont
+		TextLabel.Text = text
+		TextLabel.TextColor3 = Color3.fromRGB(253, 253, 253)
+		TextLabel.TextSize = 23.000
+		TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+		animframe.Name = "animframe"
+		animframe.Parent = Frame
+		animframe.BackgroundColor3 = Color3.fromRGB(255, 82, 82)
+		animframe.BorderColor3 = Color3.fromRGB(255, 0, 0)
+		animframe.BorderSizePixel = 0
+		animframe.Position = UDim2.new(0.845360816, 0, 0.298668027, 0)
+		animframe.Size = UDim2.new(0, 14, 0, 14)
+
+		UICorner_2.Parent = animframe
+
+		ImageButton.Parent = Frame
+		ImageButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		ImageButton.BackgroundTransparency = 1.000
+		ImageButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		ImageButton.BorderSizePixel = 0
+		ImageButton.Size = UDim2.new(1, 0, 1, 0)
+		assignClickAnimation(ImageButton)
+
+		local IO = default
+		if default then
+			animframe.BackgroundColor3 = Color3.fromRGB(119, 255, 119)
+		end
+		addConnection(ImageButton.MouseButton1Click,function() 
+			IO = not IO
+			if IO then
+				animframe.BackgroundColor3 = Color3.fromRGB(119,255,119)
+			else
+				animframe.BackgroundColor3 = Color3.fromRGB(255, 82, 82)
+			end
+			callback(IO)	
+		end)
+	end
+
+
+	createSetting("Minimizing Animation",true,function(IO)
+		minimizeAnim = IO
+	end)
+	createSetting("Smooth Close",false,function(IO)
+		instantClose = IO
+	end)
+	
+	SideBar.ClipsDescendants = true
+	addConnection(settingsBTN.MouseButton1Click,function() 
+		if settingsOpen then
+			settingsOpen = false
+			game:GetService("TweenService"):Create(SettingsPanel,TweenInfo.new(1,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut),{Position = UDim2.new(0, 0, 0.870967746, 0),Size = UDim2.new(1,0,40)}):Play()
+			game:GetService("TweenService"):Create(settingsBTN,TweenInfo.new(2,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut),{Rotation = 0}):Play()
+			wait(1)
+			loadSettings(false)
+		else
+			game:GetService("TweenService"):Create(SettingsPanel,TweenInfo.new(1,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut),{Position = UDim2.new(0,0,0,0),Size = UDim2.new(1,0,1,0)}):Play()
+			game:GetService("TweenService"):Create(settingsBTN,TweenInfo.new(2,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut),{Rotation = 360}):Play()
+			wait(.7)
+			loadSettings(true)
+			settingsOpen = true
+		end
+
+	end)
+
+	window:CreateNotification({Title = "Apoto UI Example",Description = "Interface Successfully loaded.", Duration = 3})
+	return window
 end
 
-return SkyUI
+return Apoto
