@@ -45,7 +45,7 @@ function SkyUI:CreateInterface(Options)
 	}
 
 	-- StarterGui.SkyUI
-	Interface["g1"] = Instance.new("ScreenGui", (RunService:IsStudio() and Players.LocalPlayer:WaitForChild("PlayerGui") or CoreGui))
+	Interface["g1"] = Instance.new("ScreenGui", CoreGui)
 	Interface["g1"].Name = [[SkyUI]]
 	Interface["g1"].IgnoreGuiInset = true
 	
